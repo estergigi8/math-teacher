@@ -1,0 +1,1140 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>הלוח של המורה</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playpen+Sans+Hebrew:wght@400;600&family=Rubik:wght@400;500;700&display=swap">
+<script>
+document.documentElement.lang = 'he'; document.documentElement.dir = 'rtl';
+window.MathJax = {
+  tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+  svg: { fontCache: 'global' },
+  startup: { typeset: false }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg-full.js" async></script>
+<style>
+/* Layout: two screens. Setup = stacked choice panels. Classroom = whiteboard (main) + teacher/chat rail; stacks on phone. */
+:root {
+  --bg: #eceff3;
+  --surface: #ffffff;
+  --surface-2: #f5f7fa;
+  --fg: #16202c;
+  --muted: #5a6779;
+  --line: #d6dce4;
+  --accent: #2c5bd0;
+  --accent-fg: #ffffff;
+  --hl: #f2b632;
+  --danger: #c0392b;
+  /* the board is a physical whiteboard: same in both themes */
+  --board: #fdfdfb;
+  --board-grid: #e3e9f1;
+  --board-frame: #b9c1cc;
+  --ink-blue: #1f4fbf;
+  --ink-red: #c62828;
+  --ink-green: #1b7a3a;
+  --ink-black: #23272e;
+  --ink-purple: #6a3cb5;
+  --ink-orange: #d4661a;
+  --font-ui: 'Rubik', 'Segoe UI', Arial, sans-serif;
+  --font-hand: 'Playpen Sans Hebrew', 'Rubik', 'Segoe UI', cursive;
+  --r: 12px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f141b; --surface: #18202a; --surface-2: #1f2935; --fg: #e6ecf3; --muted: #93a1b3;
+    --line: #2c3846; --accent: #7ea3ff; --accent-fg: #0d1420; --hl: #f2b632; --danger: #ff7a6b;
+    --board-frame: #3a4553; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f141b; --surface: #18202a; --surface-2: #1f2935; --fg: #e6ecf3; --muted: #93a1b3;
+  --line: #2c3846; --accent: #7ea3ff; --accent-fg: #0d1420; --hl: #f2b632; --danger: #ff7a6b;
+  --board-frame: #3a4553; color-scheme: dark;
+}
+html, body { height: 100%; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--font-ui); font-size: 15px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 12px; box-sizing: border-box;
+}
+* { box-sizing: border-box; }
+button, input, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.app { max-width: 1280px; margin: 0 auto; height: 100%; display: flex; flex-direction: column; gap: 12px; }
+
+header.top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand-mark { width: 34px; height: 34px; border-radius: 9px; background: var(--accent); color: var(--accent-fg); display: grid; place-items: center; font-family: var(--font-hand); font-weight: 600; font-size: 18px; }
+.brand h1 { margin: 0; font-size: 19px; font-weight: 700; }
+.brand small { color: var(--muted); display: block; font-size: 12.5px; line-height: 1.2; }
+.top .spacer { flex: 1; }
+.lesson-chip { background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; font-size: 13px; color: var(--muted); }
+.lesson-chip b { color: var(--fg); font-weight: 500; }
+
+.btn { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 8px 14px; display: inline-flex; align-items: center; gap: 7px; font-weight: 500; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.btn.primary:disabled { opacity: .5; cursor: not-allowed; }
+.btn.danger { color: var(--danger); }
+.btn svg { width: 17px; height: 17px; flex: none; }
+.btn.on { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+
+/* ---------- welcome ---------- */
+#welcome { display: grid; gap: 16px; padding-bottom: 24px; }
+.hero { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 28px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 32px; }
+.hero-text { display: grid; gap: 14px; min-width: 0; }
+.eyebrow { margin: 0; color: var(--accent); font-weight: 500; font-size: 13.5px; letter-spacing: .02em; }
+.hero-title { margin: 0; font-size: clamp(28px, 4.2vw, 42px); line-height: 1.15; font-weight: 700; text-wrap: balance; }
+.hero-title .hand { font-family: var(--font-hand); color: var(--accent); font-weight: 600; background: linear-gradient(transparent 70%, color-mix(in srgb, var(--hl) 50%, transparent) 70%); padding-inline: 4px; }
+.lead { margin: 0; color: var(--muted); font-size: 16.5px; max-width: 58ch; }
+.perks { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 10px; }
+.perks li { display: grid; gap: 1px; padding-inline-start: 14px; border-inline-start: 3px solid var(--hl); }
+.perks b { font-size: 15px; }
+.perks span { color: var(--muted); font-size: 14px; }
+.hero-board { min-width: 0; }
+.mini-board { background: var(--board); border: 8px solid var(--board-frame); border-radius: 12px; padding: 20px 22px; font-family: var(--font-hand); color: var(--ink-blue); display: grid; gap: 8px; transform: rotate(-1.2deg);
+  background-image: linear-gradient(var(--board-grid) 1px, transparent 1px), linear-gradient(90deg, var(--board-grid) 1px, transparent 1px); background-size: 24px 24px; }
+.mb-title { font-size: 24px; font-weight: 600; color: var(--ink-black); }
+.mb-line { font-size: 21px; }
+.mb-box { font-size: 20px; color: var(--ink-green); border: 2.5px solid currentColor; border-radius: 12px 9px 14px 8px; padding: 4px 12px; justify-self: center; }
+.ltr { direction: ltr; text-align: left; }
+.login { max-width: 440px; width: 100%; justify-self: center; }
+.login h2 { font-size: 18px; }
+.field { display: grid; gap: 5px; }
+.field label { font-weight: 500; font-size: 14px; }
+.field input { border: 1.5px solid var(--line); background: var(--surface-2); border-radius: 10px; padding: 11px 12px; min-width: 0; }
+.field input:focus { border-color: var(--accent); outline: none; }
+.form-err { margin: 0; color: var(--danger); font-size: 14px; }
+.login .btn { justify-content: center; }
+.who-row { display: flex; gap: 12px; align-items: center; min-width: 0; }
+.me-av { width: 46px; height: 46px; border-radius: 50%; object-fit: cover; flex: none; }
+.me-text { min-width: 0; }
+.me-text b { display: block; font-size: 16px; }
+.me-text span { color: var(--muted); font-size: 13.5px; }
+.btn.big { padding: 12px 22px; font-size: 16px; }
+.user-chip { display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--muted); }
+.user-chip img { width: 28px; height: 28px; border-radius: 50%; }
+@media (max-width: 760px) {
+  .hero { grid-template-columns: minmax(0, 1fr); padding: 22px 18px; }
+}
+
+/* ---------- admin ---------- */
+#admin { display: grid; gap: 14px; padding-bottom: 24px; }
+#adminPanel { display: grid; gap: 14px; }
+.admin-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.admin-head h2 { margin: 0; font-size: 20px; }
+.admin-actions { display: flex; gap: 8px; }
+.admin-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+.stat b { display: block; font-size: 24px; font-variant-numeric: tabular-nums; }
+.stat span { color: var(--muted); font-size: 13px; }
+.admin-list { display: grid; gap: 10px; }
+.stu { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+.stu summary { cursor: pointer; padding: 12px 14px; display: flex; gap: 12px; flex-wrap: wrap; align-items: baseline; }
+.stu summary b { direction: ltr; unicode-bidi: isolate; }
+.stu summary span { color: var(--muted); font-size: 13px; }
+.ev-wrap { overflow-x: auto; border-top: 1px solid var(--line); }
+.ev { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.ev td { padding: 7px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.ev td:first-child { white-space: nowrap; color: var(--muted); font-variant-numeric: tabular-nums; }
+.tag { display: inline-block; border-radius: 999px; padding: 1px 9px; font-size: 12px; font-weight: 500; white-space: nowrap; background: var(--surface-2); border: 1px solid var(--line); }
+.tag.question { border-color: var(--accent); color: var(--accent); }
+.tag.lesson { border-color: var(--hl); }
+
+/* ---------- setup ---------- */
+#setup { display: grid; gap: 14px; padding-bottom: 24px; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; display: grid; gap: 12px; }
+.panel h2 { margin: 0; font-size: 16px; font-weight: 700; display: flex; align-items: baseline; gap: 8px; }
+.panel h2 .n { font-family: var(--font-hand); color: var(--accent); font-size: 20px; }
+.panel p.hint { margin: 0; color: var(--muted); font-size: 13.5px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { border: 1.5px solid var(--line); background: var(--surface-2); border-radius: 10px; padding: 9px 16px; font-weight: 500; }
+.chip[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: var(--accent-fg); }
+.topics { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+.cat { border: 1px solid var(--line); border-radius: 10px; padding: 12px; background: var(--surface-2); min-width: 0; }
+.cat h3 { margin: 0 0 8px; font-size: 13px; letter-spacing: .02em; color: var(--muted); font-weight: 500; }
+.cat ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.topic { width: 100%; text-align: right; border: 1px solid transparent; background: transparent; border-radius: 8px; padding: 6px 9px; }
+.topic:hover { background: var(--surface); border-color: var(--line); }
+.topic[aria-pressed="true"] { background: var(--surface); border-color: var(--accent); color: var(--accent); font-weight: 500; }
+.free { display: flex; gap: 8px; flex-wrap: wrap; }
+.free input { flex: 1; min-width: 0; border: 1.5px solid var(--line); background: var(--surface-2); border-radius: 10px; padding: 10px 12px; }
+.free input:focus { border-color: var(--accent); outline: none; }
+.teachers { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.tcard { text-align: right; border: 1.5px solid var(--line); background: var(--surface-2); border-radius: 12px; padding: 14px; display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; align-items: center; }
+.tcard[aria-pressed="true"] { border-color: var(--accent); background: var(--surface); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent); }
+.tcard .av { grid-row: span 2; }
+.tcard b { font-size: 15px; }
+.tcard span { color: var(--muted); font-size: 13px; line-height: 1.35; }
+.start-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.start-row .summary { color: var(--muted); font-size: 14px; }
+.notice { border: 1px solid var(--hl); background: color-mix(in srgb, var(--hl) 14%, var(--surface)); border-radius: 10px; padding: 10px 14px; font-size: 14px; }
+
+/* avatar */
+.av { width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-family: var(--font-hand); font-weight: 600; font-size: 22px; position: relative; flex: none; }
+.av.lg { width: 64px; height: 64px; font-size: 26px; }
+.av::after { content: ""; position: absolute; inset: -5px; border-radius: 50%; border: 3px solid currentColor; opacity: 0; color: var(--accent); }
+.speaking .av::after { animation: ring 1.1s ease-out infinite; }
+@keyframes ring { 0% { opacity: .7; transform: scale(.92); } 100% { opacity: 0; transform: scale(1.18); } }
+
+/* ---------- classroom ---------- */
+#room { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 12px; }
+.board-wrap { min-width: 0; min-height: 0; display: flex; flex-direction: column; background: var(--board); border: 10px solid var(--board-frame); border-radius: 14px; position: relative; box-shadow: inset 0 0 0 1px rgba(0,0,0,.05); }
+.board-tray { position: absolute; bottom: -10px; inset-inline: 30px; height: 10px; }
+#board {
+  flex: 1; overflow-y: auto; overflow-x: hidden; padding: 26px 30px 60px; color: var(--ink-black);
+  font-family: var(--font-hand); font-size: 21px; line-height: 1.75;
+  background-image: linear-gradient(var(--board-grid) 1px, transparent 1px), linear-gradient(90deg, var(--board-grid) 1px, transparent 1px);
+  background-size: 28px 28px; background-attachment: local; scroll-behavior: smooth;
+}
+#board .empty { color: #8a94a3; font-size: 20px; text-align: center; padding-top: 18%; }
+.bi { margin: 0 0 10px; transform: rotate(var(--tilt, 0deg)); overflow-wrap: anywhere; }
+.bi.title { font-size: 31px; font-weight: 600; display: inline-block; padding-bottom: 4px; background: linear-gradient(transparent 72%, color-mix(in srgb, var(--hl) 55%, transparent) 72%); }
+.bi.math, .bi.box { direction: ltr; text-align: center; overflow-x: auto; overflow-y: hidden; padding: 4px 0; }
+.bi.box { border: 2.5px solid currentColor; border-radius: 14px 10px 16px 9px; padding: 10px 16px; margin-inline: auto; width: fit-content; max-width: 100%; }
+.bi.note { font-size: 18px; border-inline-start: 3px solid currentColor; padding-inline-start: 12px; }
+.bi.step { display: flex; gap: 10px; align-items: baseline; }
+.bi.step .num { flex: none; width: 30px; height: 30px; border: 2px solid currentColor; border-radius: 50%; display: inline-grid; place-items: center; font-size: 16px; }
+.bi.step .txt { min-width: 0; }
+.bi.graph { direction: ltr; display: flex; justify-content: center; }
+.bi.graph svg { max-width: 100%; height: auto; }
+.page-break { border: none; border-top: 2px dashed var(--board-frame); margin: 26px 0 18px; position: relative; }
+.page-break::after { content: attr(data-label); position: absolute; top: -13px; right: 0; background: var(--board); padding: 0 8px; font-size: 15px; color: #8a94a3; font-family: var(--font-hand); }
+.bi mjx-container { color: inherit; }
+.bi mjx-container[display="false"] { direction: ltr; }
+.c-blue { color: var(--ink-blue); } .c-red { color: var(--ink-red); } .c-green { color: var(--ink-green); }
+.c-black { color: var(--ink-black); } .c-purple { color: var(--ink-purple); } .c-orange { color: var(--ink-orange); }
+.write-rtl { animation: write-rtl var(--dur, .8s) linear both; }
+.write-ltr { animation: write-ltr var(--dur, .8s) linear both; }
+@keyframes write-rtl { from { clip-path: inset(-20% 0 -20% 100%); } to { clip-path: inset(-20% 0 -20% 0); } }
+@keyframes write-ltr { from { clip-path: inset(-20% 100% -20% 0); } to { clip-path: inset(-20% 0 -20% 0); } }
+.board-status { position: absolute; bottom: 12px; left: 14px; background: rgba(255,255,255,.92); color: #3b4656; border: 1px solid #d6dce4; border-radius: 999px; padding: 5px 12px; font-size: 13px; display: flex; gap: 8px; align-items: center; font-family: var(--font-ui); }
+.dots i { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: currentColor; margin: 0 1.5px; animation: dot 1s infinite; }
+.dots i:nth-child(2) { animation-delay: .15s; } .dots i:nth-child(3) { animation-delay: .3s; }
+@keyframes dot { 0%, 100% { opacity: .25; } 50% { opacity: 1; } }
+
+.rail { min-width: 0; min-height: 0; display: flex; flex-direction: column; gap: 12px; }
+.teacher-box { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; display: grid; gap: 12px; }
+.teacher-head { display: flex; gap: 12px; align-items: center; }
+.teacher-head b { display: block; font-size: 16px; }
+.teacher-head span { color: var(--muted); font-size: 13px; }
+.controls { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.controls .btn { justify-content: center; padding: 9px 8px; }
+.controls .wide { grid-column: span 2; }
+.voice-row { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+.voice-row input[type=range] { flex: 1; accent-color: var(--accent); }
+.voice-row select { flex: 1; min-width: 0; border: 1px solid var(--line); background: var(--surface-2); border-radius: 8px; padding: 5px 8px; color: var(--fg); }
+.voice-hint { margin: 0; font-size: 12.5px; color: var(--muted); background: color-mix(in srgb, var(--hl) 14%, var(--surface)); border-radius: 8px; padding: 7px 10px; }
+.mic-help { align-self: stretch; max-width: none; background: color-mix(in srgb, var(--accent) 10%, var(--surface)); border: 1px solid var(--accent); font-size: 13.5px; }
+.mic-help kbd { font-family: var(--font-ui); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; background: var(--surface); }
+.chat { flex: 1; min-height: 220px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); display: flex; flex-direction: column; overflow: hidden; }
+.chat-log { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+.msg { max-width: 88%; padding: 8px 12px; border-radius: 12px; font-size: 14px; line-height: 1.45; overflow-wrap: anywhere; }
+.msg.t { background: var(--surface-2); border: 1px solid var(--line); align-self: flex-start; border-start-start-radius: 4px; }
+.msg.s { background: var(--accent); color: var(--accent-fg); align-self: flex-end; border-start-end-radius: 4px; }
+.msg.sys { align-self: center; background: transparent; color: var(--muted); font-size: 12.5px; text-align: center; }
+.msg.err { align-self: stretch; max-width: none; background: color-mix(in srgb, var(--danger) 10%, var(--surface)); border: 1px solid var(--danger); }
+.msg .who { display: block; font-size: 11.5px; opacity: .75; margin-bottom: 2px; }
+.msg button { margin-top: 6px; }
+.composer { border-top: 1px solid var(--line); padding: 10px; display: flex; gap: 8px; align-items: flex-end; }
+.composer textarea { flex: 1; min-width: 0; resize: none; border: 1.5px solid var(--line); background: var(--surface-2); border-radius: 10px; padding: 8px 10px; max-height: 120px; }
+.composer textarea:focus { border-color: var(--accent); outline: none; }
+.icon-btn { width: 40px; height: 40px; flex: none; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); display: grid; place-items: center; }
+.icon-btn svg { width: 19px; height: 19px; }
+.icon-btn.send { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.icon-btn.rec { background: var(--danger); color: #fff; border-color: var(--danger); animation: pulse 1.2s infinite; }
+@keyframes pulse { 50% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--danger) 25%, transparent); } }
+
+@media (max-width: 900px) {
+  body { height: auto; }
+  .app { height: auto; }
+  #room { grid-template-columns: minmax(0, 1fr); }
+  .board-wrap { height: 62vh; min-height: 380px; }
+  #board { font-size: 18px; padding: 18px 16px 56px; }
+  .bi.title { font-size: 25px; }
+  .chat { min-height: 360px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .write-rtl, .write-ltr, .speaking .av::after, .dots i, .icon-btn.rec { animation: none !important; }
+}
+</style>
+
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <div class="brand-mark">∫</div>
+      <div><h1>הלוח של המורה</h1><small>שיעור מתמטיקה אונליין · כיתות י'–י"ב · 3, 4 ו-5 יח"ל</small></div>
+    </div>
+    <div class="spacer"></div>
+    <div class="lesson-chip" id="lessonChip" hidden></div>
+    <button class="btn" id="backBtn" hidden>שיעור חדש</button>
+    <div class="user-chip" id="userChip" hidden><img id="chipAv" alt=""><span id="chipName"></span></div>
+  </header>
+
+  <!-- ===== Welcome ===== -->
+  <section id="welcome">
+    <div class="hero">
+      <div class="hero-text">
+        <p class="eyebrow">שיעור מתמטיקה אישי · כיתות י'–י"ב</p>
+        <h2 class="hero-title">ברוכים הבאים ל<span class="hand">הלוח של המורה</span></h2>
+        <p class="lead">מורה פרטי שכותב על הלוח, מסביר בקול ועוצר בכל פעם שיש לך שאלה. בוחרים כיתה, רמה (3, 4 או 5 יח"ל) ונושא מתוך תוכנית הלימודים, ומתחילים ללמוד.</p>
+        <ul class="perks">
+          <li><b>לוח חי</b><span>נוסחאות, שלבי פתרון וגרפים נכתבים מול העיניים</span></li>
+          <li><b>שואלים בכל רגע</b><span>עוצרים את המורה בכתיבה או בדיבור</span></li>
+          <li><b>3 מורים לבחירה</b><span>כל אחד עם סגנון וקול משלו</span></li>
+        </ul>
+      </div>
+      <div class="hero-board" aria-hidden="true">
+        <div class="mini-board">
+          <div class="mb-title">נגזרת של פולינום</div>
+          <div class="mb-line ltr">f(x) = x³ − 3x</div>
+          <div class="mb-line ltr">f′(x) = 3x² − 3</div>
+          <div class="mb-box ltr">f′(x) = 0 ⇒ x = ±1</div>
+        </div>
+      </div>
+    </div>
+
+    <form class="panel login" id="loginForm" novalidate>
+      <h2>כניסה לכיתה</h2>
+      <div class="field">
+        <label for="loginEmail">מייל</label>
+        <input id="loginEmail" type="email" dir="ltr" autocomplete="email" placeholder="name@example.com" required>
+      </div>
+      <div class="field">
+        <label for="loginPass">סיסמה</label>
+        <input id="loginPass" type="password" dir="ltr" autocomplete="current-password" placeholder="לפחות 6 תווים" required>
+      </div>
+      <p class="form-err" id="loginErr" hidden></p>
+      <button class="btn primary big" type="submit" id="enterBtn">כניסה</button>
+      <p class="hint">בפעם הראשונה הפרטים נשמרים, ובפעם הבאה נכנסים עם אותו מייל ואותה סיסמה. הפרטים נשמרים רק בדפדפן הזה.</p>
+    </form>
+  </section>
+
+  <!-- ===== Setup ===== -->
+  <section id="setup" hidden>
+    <div class="notice" id="aiNotice" hidden></div>
+
+    <div class="panel">
+      <h2><span class="n">1</span>באיזו כיתה את/ה?</h2>
+      <div class="chips" id="gradeChips"></div>
+    </div>
+
+    <div class="panel">
+      <h2><span class="n">2</span>כמה יחידות לימוד?</h2>
+      <div class="chips" id="unitChips"></div>
+    </div>
+
+    <div class="panel">
+      <h2><span class="n">3</span>על מה לומדים היום?</h2>
+      <p class="hint" id="topicsHint">הנושאים מסודרים לפי תוכנית הלימודים לכיתה ולרמה שבחרת. אפשר גם לכתוב נושא במילים שלך.</p>
+      <div class="free">
+        <input id="freeTopic" type="text" placeholder="לדוגמה: איך מוצאים נקודות קיצון של פונקציה עם שורש" autocomplete="off">
+      </div>
+      <div class="topics" id="topics"></div>
+    </div>
+
+    <div class="panel">
+      <h2><span class="n">4</span>בחירת מורה</h2>
+      <div class="teachers" id="teachers"></div>
+    </div>
+
+    <div class="start-row">
+      <button class="btn primary" id="startBtn" disabled>
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg>
+        התחלת השיעור
+      </button>
+      <span class="summary" id="summary">בחרו כיתה, רמה ונושא</span>
+    </div>
+  </section>
+
+  <!-- ===== Admin (hidden: open with #admin or 5 clicks on the logo) ===== -->
+  <section id="admin" hidden>
+    <form class="panel login" id="adminLogin" novalidate>
+      <h2>כניסת מנהלת</h2>
+      <div class="field">
+        <label for="adminPass">סיסמה</label>
+        <input id="adminPass" type="password" dir="ltr" autocomplete="off">
+      </div>
+      <p class="form-err" id="adminErr" hidden></p>
+      <button class="btn primary" type="submit">כניסה</button>
+      <button class="btn" type="button" id="adminClose">חזרה לאתר</button>
+    </form>
+    <div id="adminPanel" hidden>
+      <div class="admin-head">
+        <h2>כל הפניות מהאתר</h2>
+        <div class="admin-actions">
+          <button class="btn" id="adminRefresh">רענון</button>
+          <button class="btn" id="adminExit">יציאה</button>
+        </div>
+      </div>
+      <div class="admin-stats" id="adminStats"></div>
+      <p class="hint" id="adminMsg"></p>
+      <div class="admin-list" id="adminList"></div>
+    </div>
+  </section>
+
+  <!-- ===== Classroom ===== -->
+  <section id="room" hidden>
+    <div class="board-wrap">
+      <div id="board"><div class="empty">המורה עוד רגע מתחיל לכתוב על הלוח…</div></div>
+      <div class="board-status" id="boardStatus" hidden><span class="dots"><i></i><i></i><i></i></span><span id="boardStatusText">המורה חושב</span></div>
+    </div>
+
+    <aside class="rail">
+      <div class="teacher-box" id="teacherBox">
+        <div class="teacher-head">
+          <div class="av lg" id="tAv"></div>
+          <div><b id="tName"></b><span id="tState">מתכונן לשיעור</span></div>
+        </div>
+        <div class="controls">
+          <button class="btn" id="pauseBtn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+            <span>עצור</span>
+          </button>
+          <button class="btn" id="raiseBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-4 0v5M14 10V4a2 2 0 0 0-4 0v6M10 10.5V6a2 2 0 0 0-4 0v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>
+            <span>יש לי שאלה</span>
+          </button>
+          <button class="btn" id="practiceBtn">תן לי תרגיל</button>
+          <button class="btn" id="slowerBtn">לא הבנתי, שוב</button>
+          <button class="btn wide" id="summaryBtn">סכם לי את השיעור</button>
+        </div>
+        <div class="voice-row">
+          <button class="btn" id="muteBtn" style="padding:5px 10px">קול: פועל</button>
+          <span>מהירות</span>
+          <input type="range" id="rate" min="0.7" max="1.4" step="0.05" value="1" aria-label="מהירות דיבור">
+        </div>
+        <div class="voice-row">
+          <label for="voiceSel">הקול של המורה</label>
+          <select id="voiceSel"></select>
+        </div>
+        <p class="voice-hint" id="voiceHint" hidden></p>
+      </div>
+
+      <div class="chat">
+        <div class="chat-log" id="chatLog" aria-live="polite"></div>
+        <div class="composer">
+          <button class="icon-btn" id="micBtn" title="דיבור במיקרופון" aria-label="דיבור במיקרופון">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+          </button>
+          <textarea id="input" rows="1" placeholder="כתבו שאלה או תשובה למורה…"></textarea>
+          <button class="icon-btn send" id="sendBtn" aria-label="שליחה">
+            <svg viewBox="0 0 24 24" fill="currentColor" style="transform:scaleX(-1)"><path d="M3 20.5 21 12 3 3.5l2.5 7L15 12l-9.5 1.5z"/></svg>
+          </button>
+        </div>
+      </div>
+    </aside>
+  </section>
+</div>
+
+<script>
+/* ================= Curriculum (by grade and units) ================= */
+const GRADES = [{ id: '10', label: "כיתה י'" }, { id: '11', label: 'כיתה י"א' }, { id: '12', label: 'כיתה י"ב' }];
+const UNITS = [3, 4, 5];
+const CURRICULUM = {
+  '10': {
+    3: [
+      { cat: 'אלגברה', items: ['משוואות ממעלה ראשונה', 'משוואות ריבועיות ונוסחת השורשים', 'מערכת שתי משוואות בשני נעלמים', 'אי-שוויונים ממעלה ראשונה', 'בעיות מילוליות'] },
+      { cat: 'פונקציות', items: ['מושג הפונקציה וקריאת גרפים', 'הפונקציה הקווית ושיפוע', 'הפונקציה הריבועית (פרבולה)', 'נקודות חיתוך עם הצירים'] },
+      { cat: 'גאומטריה וטריגונומטריה', items: ['גאומטריה אנליטית: מרחק ואמצע קטע', 'משוואת הישר', 'טריגונומטריה במשולש ישר זווית', 'שטחים והיקפים'] },
+      { cat: 'סטטיסטיקה והסתברות', items: ['ממוצע, חציון ושכיח', 'סטיית תקן', 'הסתברות בסיסית', 'אחוזים'] }
+    ],
+    4: [
+      { cat: 'אלגברה', items: ['משוואות ואי-שוויונים ריבועיים', 'מערכות משוואות', 'משוואות עם שברים אלגבריים', 'בעיות מילוליות (תנועה, עבודה, קנייה ומכירה)'] },
+      { cat: 'פונקציות', items: ['הפונקציה הקווית', 'הפונקציה הריבועית וקודקוד הפרבולה', 'חיתוך בין ישר לפרבולה', 'תחום עלייה וירידה, חיוביות ושליליות'] },
+      { cat: 'גאומטריה', items: ['גאומטריה אנליטית: ישר, מרחק ואמצע', 'מקביליות ומאונכות של ישרים', 'גאומטריה אוקלידית: משולשים ומרובעים', 'טריגונומטריה במשולש ישר זווית'] },
+      { cat: 'הסתברות וסטטיסטיקה', items: ['הסתברות: דיאגרמת עץ', 'טבלה דו-ממדית', 'סטטיסטיקה: ממוצע וסטיית תקן'] }
+    ],
+    5: [
+      { cat: 'אלגברה ובעיות מילוליות', items: ['משוואות ואי-שוויונים עם פרמטר', 'משוואות ממעלה גבוהה ודו-ריבועיות', 'משוואות ואי-שוויונים עם ערך מוחלט', 'בעיות תנועה', 'בעיות הספק ועבודה', 'בעיות קנייה ומכירה'] },
+      { cat: 'גאומטריה אנליטית', items: ['ישר: שיפוע, מקביליות ומאונכות', 'מרחק נקודה מישר', 'משוואת המעגל', 'ישר ומעגל: חיתוך ומשיקים'] },
+      { cat: 'גאומטריה אוקלידית', items: ['הוכחות במשולשים וחפיפה', 'מרובעים: מקבילית, מעוין, טרפז', 'דמיון משולשים', 'מעגל: זוויות, מיתרים ומשיקים'] },
+      { cat: 'טריגונומטריה והסתברות', items: ['טריגונומטריה במשולש ישר זווית', 'טריגונומטריה במישור', 'הסתברות: עץ ותלות', 'הסתברות מותנית'] }
+    ]
+  },
+  '11': {
+    3: [
+      { cat: 'חשבון דיפרנציאלי', items: ['הנגזרת של פולינום', 'משוואת משיק', 'נקודות קיצון ותחומי עלייה וירידה', 'חקירת פולינום ושרטוט'] },
+      { cat: 'גדילה ודעיכה', items: ['גדילה ודעיכה באחוזים', 'ריבית דריבית', 'פונקציה מעריכית בבעיות'] },
+      { cat: 'הסתברות וסטטיסטיקה', items: ['דיאגרמת עץ', 'טבלה דו-ממדית', 'התפלגות נורמלית', 'שימושים בסטטיסטיקה'] },
+      { cat: 'גאומטריה', items: ['טריגונומטריה במרחב: תיבה', 'טריגונומטריה במרחב: פירמידה', 'גאומטריה אנליטית: ישרים ומשולשים'] }
+    ],
+    4: [
+      { cat: 'חשבון דיפרנציאלי', items: ['נגזרת וחקירת פולינום', 'פונקציות רציונליות: אסימפטוטות', 'חקירת פונקציה רציונלית', 'פונקציית שורש וחקירתה', 'בעיות קיצון'] },
+      { cat: 'סדרות', items: ['סדרה חשבונית', 'סדרה הנדסית', 'בעיות מילוליות בסדרות'] },
+      { cat: 'טריגונומטריה', items: ['משפט הסינוסים', 'משפט הקוסינוסים', 'שטח משולש בעזרת סינוס'] },
+      { cat: 'הסתברות וגאומטריה אנליטית', items: ['הסתברות מותנית', 'התפלגות בינומית (ברנולי)', 'משוואת המעגל', 'משיק למעגל'] },
+      { cat: 'גדילה ודעיכה', items: ['גדילה ודעיכה מעריכית', 'בעיות גדילה ודעיכה'] }
+    ],
+    5: [
+      { cat: 'חשבון דיפרנציאלי', items: ['פונקציות רציונליות וחקירתן', 'פונקציות שורש וחקירתן', 'בעיות קיצון', 'נגזרת של פונקציה מורכבת (כלל השרשרת)'] },
+      { cat: 'סדרות', items: ['סדרה חשבונית והנדסית', 'טור הנדסי אינסופי מתכנס', 'סדרות מוגדרות ברקורסיה', 'אינדוקציה מתמטית'] },
+      { cat: 'טריגונומטריה', items: ['משפט הסינוסים והקוסינוסים', 'טריגונומטריה במישור: בעיות משולבות', 'זהויות טריגונומטריות', 'משוואות טריגונומטריות'] },
+      { cat: 'הסתברות וגאומטריה אנליטית', items: ['הסתברות מותנית ותלות', 'התפלגות בינומית', 'מעגל ומשיקים', 'מקומות גאומטריים', 'פרבולה ואליפסה'] }
+    ]
+  },
+  '12': {
+    3: [
+      { cat: 'חשבון דיפרנציאלי ואינטגרלי', items: ['חקירת פונקציה רציונלית פשוטה', 'פונקציית שורש', 'פונקציה קדומה ואינטגרל', 'חישוב שטחים בעזרת אינטגרל'] },
+      { cat: 'סטטיסטיקה והסתברות', items: ['התפלגות נורמלית', 'הסתברות: בעיות משולבות'] },
+      { cat: 'גאומטריה וטריגונומטריה', items: ['טריגונומטריה במרחב', 'גאומטריה אנליטית'] },
+      { cat: 'הכנה לבגרות', items: ['חזרה על גדילה ודעיכה', 'פתרון שאלות בגרות', 'טעויות נפוצות בבגרות'] }
+    ],
+    4: [
+      { cat: 'חשבון דיפרנציאלי', items: ['נגזרות של פונקציות טריגונומטריות', 'חקירת פונקציות טריגונומטריות', 'הפונקציה המעריכית e^x', 'לוגריתמים והפונקציה ln x', 'חקירת פונקציות מעריכיות ולוגריתמיות'] },
+      { cat: 'חשבון אינטגרלי', items: ['אינטגרל לא מסוים', 'אינטגרל מסוים ושטחים', 'שטח בין שתי פונקציות'] },
+      { cat: 'טריגונומטריה והסתברות', items: ['טריגונומטריה במרחב', 'התפלגות נורמלית'] },
+      { cat: 'הכנה לבגרות', items: ['פתרון שאלות בגרות', 'בעיות קיצון משולבות'] }
+    ],
+    5: [
+      { cat: 'חשבון דיפרנציאלי ואינטגרלי', items: ['פונקציות טריגונומטריות: נגזרת וחקירה', 'פונקציות מעריכיות ולוגריתמיות', 'אינטגרלים ושטחים', 'נפח גוף סיבוב', 'אינטגרל בשיטת ההצבה'] },
+      { cat: 'וקטורים', items: ['וקטורים: הצגה גאומטרית', 'וקטורים: הצגה אלגברית ומכפלה סקלרית', 'ישרים במרחב', 'מישורים במרחב', 'מרחקים וזוויות במרחב'] },
+      { cat: 'מספרים מרוכבים', items: ['מספרים מרוכבים: הצגה אלגברית', 'הצגה קוטבית (טריגונומטרית)', 'משפט דה-מואבר ושורשים', 'מרוכבים במישור גאוס'] },
+      { cat: 'הכנה לבגרות', items: ['פתרון שאלות בגרות 5 יח"ל', 'שאלות חקירה עם פרמטר'] }
+    ]
+  }
+};
+
+const EXAMS = { '10-5': 'שאלון 571' };
+const examOf = () => EXAMS[sel.grade + '-' + sel.units] || '';
+
+const TEACHERS = [
+  { id: 'ronit', name: 'רונית', color: '#2c6fd6', ink: 'blue', gender: 'f', slot: 0, pitch: 1.1, rate: 1,
+    blurb: 'סבלנית וחמה. מסבירה לאט, עם הרבה דוגמאות מהחיים.',
+    persona: 'את רונית, מורה סבלנית וחמה. את מסבירה לאט ובבהירות, עם דוגמאות מהחיים, מעודדת הרבה ובודקת הבנה בכל שלב. את מדברת בלשון נקבה על עצמך.' },
+  { id: 'avi', name: 'אבי', color: '#1f8a4c', ink: 'green', gender: 'm', slot: 0, pitch: 0.95, rate: 1.08,
+    blurb: 'אנרגטי ומצחיק. קצב מהיר, טריקים וקיצורי דרך.',
+    persona: 'אתה אבי, מורה אנרגטי עם חוש הומור. אתה מסביר בקצב טוב, משתמש בטריקים וקיצורי דרך לזכירה, ומדי פעם זורק בדיחה קטנה. אתה מדבר בלשון זכר על עצמך.' },
+  { id: 'michal', name: 'ד"ר מיכל', color: '#6a3cb5', ink: 'purple', gender: 'f', slot: 1, pitch: 0.95, rate: 0.95,
+    blurb: 'מדויקת וממוקדת בגרות. מבנה פתרון מלא כמו במבחן.',
+    persona: 'את ד"ר מיכל, מורה מדויקת וממוקדת בבחינת הבגרות. את מקפידה על כתיבה מתמטית נכונה, מראה מבנה פתרון מלא כמו שבודק בבגרות מצפה לראות, ומזהירה מטעויות נפוצות. את מדברת בלשון נקבה על עצמך.' }
+];
+
+/* ================= helpers ================= */
+const $ = (id) => document.getElementById(id);
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+const sel = { grade: null, units: null, topic: null, free: '', teacher: TEACHERS[0].id };
+
+function renderChips() {
+  const g = $('gradeChips'); g.innerHTML = '';
+  GRADES.forEach(gr => {
+    const b = el('button', 'chip', gr.label); b.setAttribute('aria-pressed', sel.grade === gr.id);
+    b.onclick = () => { sel.grade = gr.id; sel.topic = null; renderAll(); }; g.append(b);
+  });
+  const u = $('unitChips'); u.innerHTML = '';
+  UNITS.forEach(n => {
+    const b = el('button', 'chip', n + ' יח"ל'); b.setAttribute('aria-pressed', sel.units === n);
+    b.onclick = () => { sel.units = n; sel.topic = null; renderAll(); }; u.append(b);
+  });
+}
+function renderTopics() {
+  const box = $('topics'); box.innerHTML = '';
+  $('topicsHint').textContent = 'הנושאים מסודרים לפי תוכנית הלימודים לכיתה ולרמה שבחרת' + (examOf() ? ' (' + examOf() + ')' : '') + '. אפשר גם לכתוב נושא במילים שלך.';
+  if (!sel.grade || !sel.units) {
+    box.append(el('p', 'hint', 'בחרו כיתה ומספר יחידות כדי לראות את רשימת הנושאים.'));
+    return;
+  }
+  CURRICULUM[sel.grade][sel.units].forEach(c => {
+    const card = el('div', 'cat'); card.append(el('h3', null, c.cat));
+    const ul = el('ul');
+    c.items.forEach(t => {
+      const li = el('li'); const b = el('button', 'topic', t);
+      b.setAttribute('aria-pressed', sel.topic === t);
+      b.onclick = () => { sel.topic = t; sel.free = ''; $('freeTopic').value = ''; renderAll(); };
+      li.append(b); ul.append(li);
+    });
+    card.append(ul); box.append(card);
+  });
+}
+function avatar(t, lg) { const a = el('div', 'av' + (lg ? ' lg' : ''), t.name.replace('ד"ר ', '')[0]); a.style.background = t.color; return a; }
+function renderTeachers() {
+  const box = $('teachers'); box.innerHTML = '';
+  TEACHERS.forEach(t => {
+    const b = el('button', 'tcard'); b.setAttribute('aria-pressed', sel.teacher === t.id);
+    b.append(avatar(t), el('b', null, t.name), el('span', null, t.blurb));
+    b.onclick = () => { sel.teacher = t.id; renderAll(); }; box.append(b);
+  });
+}
+function topicText() { return sel.free.trim() || sel.topic; }
+function renderSummary() {
+  const ok = sel.grade && sel.units && topicText();
+  $('startBtn').disabled = !ok || aiState === 'none';
+  const gl = GRADES.find(g => g.id === sel.grade);
+  $('summary').textContent = ok ? `${gl.label} · ${sel.units} יח"ל · ${topicText()} · עם ${teacher().name}` : 'בחרו כיתה, רמה ונושא';
+}
+function renderAll() { renderChips(); renderTopics(); renderTeachers(); renderSummary(); }
+const teacher = () => TEACHERS.find(t => t.id === sel.teacher);
+
+$('freeTopic').addEventListener('input', e => { sel.free = e.target.value; if (sel.free.trim()) sel.topic = null; renderTopics(); renderSummary(); });
+
+/* ================= server (Supabase edge function) ================= */
+const API_URL = 'https://lkxsqcmkoudqerdqaxfh.supabase.co/functions/v1/math-api';
+// public anon key: safe in the browser, the function decides what each action may do
+const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxreHNxY21rb3VkcWVyZHFheGZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI5MzkwODUsImV4cCI6MjEwODUxNTA4NX0.onz5LBa3gwQC-G4usivn7jaT-l-8QgrStF9XcIMKONs';
+async function api(body, signal) {
+  const res = await fetch(API_URL, {
+    method: 'POST', signal,
+    headers: { 'content-type': 'application/json', apikey: ANON_KEY, Authorization: 'Bearer ' + ANON_KEY },
+    body: JSON.stringify(body)
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw { code: data.error || 'upstream_error', status: res.status };
+  return data;
+}
+const aiState = 'ok';
+const sample = {
+  json: async (msgs, opts) => {
+    let data;
+    try { data = await api({ action: 'teacher', messages: msgs }, opts.signal); }
+    catch (e) { if (e && e.name === 'AbortError') throw { code: 'cancelled' }; throw e; }
+    const text = data.text || ''; const a = text.indexOf('{'), b = text.lastIndexOf('}');
+    try { return JSON.parse(text.slice(a, b + 1)); } catch { throw { code: 'invalid_json', text }; }
+  }
+};
+
+function curriculumContext() {
+  return CURRICULUM[sel.grade][sel.units].map(c => c.cat + ': ' + c.items.join(', ')).join('\n');
+}
+function rules() {
+  const t = teacher(); const gl = GRADES.find(g => g.id === sel.grade).label;
+  return `${t.persona}
+אתה/את מעביר/ה שיעור פרטי אונליין במתמטיקה לתלמיד/ה ב${gl}, ברמת ${sel.units} יחידות לימוד${examOf() ? ', לקראת ' + examOf() + ' בבגרות' : ''}, לפי תוכנית הלימודים של משרד החינוך (תשפ"ז).
+נושא השיעור שהתלמיד/ה ביקש/ה: "${topicText()}".
+${studentName ? 'שם התלמיד/ה: ' + studentName + '. פנה/י בשם הפרטי מדי פעם, בטבעיות.' : ''}
+אם הנושא נכתב במילים חופשיות, הבן/י לאיזה נושא בתוכנית הוא שייך והתאם/י לרמה. אם הוא מחוץ לרמה, אמור/י זאת בעדינות והתאם/י.
+נושאי התוכנית בכיתה וברמה הזו (להקשר):
+${curriculumContext()}
+
+יש לך לוח לבן שאתה/את כותב/ת עליו בטושים, ואת/ה מדבר/ת בקול תוך כדי. השיעור מתקדם במקטעים קצרים.
+מבנה שיעור טוב: פתיחה קצרה ומוטיבציה, הגדרות ונוסחאות, דוגמה פתורה שלב אחר שלב, שאלת בדיקת הבנה לתלמיד, תרגול, וסיכום.
+בכל תשובה החזר/י 2 עד 4 שלבים (steps). בכל שלב: מה שנכתב על הלוח (board) ומה שנאמר בקול (speech).
+- speech: עברית מדוברת וטבעית, 1-3 משפטים, בלי LaTeX ובלי סימנים. קרא/י ביטויים במילים (למשל "איקס בריבוע פחות ארבע").
+- board: כתיבה קצרה כמו מורה אמיתי על לוח, לא פסקאות. פריטים אפשריים:
+  {"kind":"title","text":"..."} כותרת
+  {"kind":"text","text":"... עם נוסחה בתוך $...$"} שורת טקסט
+  {"kind":"math","tex":"LaTeX"} נוסחה במרכז השורה
+  {"kind":"box","tex":"LaTeX"} נוסחה חשובה במסגרת
+  {"kind":"step","text":"..."} שלב ממוספר בפתרון
+  {"kind":"note","text":"..."} הערה או אזהרה מטעות נפוצה
+  {"kind":"graph","fns":["x^2-4"],"xmin":-5,"xmax":5,"ymin":-6,"ymax":6,"points":[{"x":2,"y":0,"label":"(2,0)"}]} גרף. בפונקציות השתמש/י רק ב: x, מספרים, + - * / ^ ( ), sin cos tan sqrt ln log exp abs pi e.
+  {"kind":"newpage"} מחיקת הלוח ומעבר לעמוד חדש (כשהלוח מתמלא או כשעוברים לחלק חדש).
+  לכל פריט אפשר להוסיף "color": blue | red | green | black | purple | orange. הטוש הקבוע שלך: ${t.ink}. אדום להדגשות ואזהרות, ירוק לתשובות סופיות.
+- status: "continue" אם תמשיך/י בהסבר במקטע הבא, "ask" אם שאלת את התלמיד/ה שאלה ואת/ה מחכה לתשובה, "end" כשהשיעור הסתיים.
+כשהתלמיד/ה עונה על שאלה: בדוק/י את התשובה בכנות, הסבר/י טעויות בעדינות, ואז המשך/י.
+כשהתלמיד/ה עוצר/ת אותך עם שאלה: ענה/י עליה על הלוח ובקול, ואז חזור/י לשיעור מאותה נקודה.
+כתוב/י נוסחאות בכתיב המקובל בבתי הספר בישראל. היה/י מדויק/ת מתמטית.
+החזר/י JSON בלבד, בצורה: {"steps":[{"board":[...],"speech":"..."}],"status":"continue"}`;
+}
+
+let turns = [], ctl = null, lastUserText = null;
+async function askTeacher(userText) {
+  if (!sample) return;
+  stopPlayback(true);
+  if (ctl) ctl.abort();
+  lastUserText = userText;
+  turns.push({ role: 'user', content: userText });
+  if (turns.length > 40) turns = turns.slice(-40);
+  if (turns[0].role !== 'user') turns.shift();
+  setBusy('המורה חושב');
+  ctl = new AbortController(); const myCtl = ctl;
+  try {
+    const res = await sample.json([{ role: 'user', content: rules() }, ...turns], { signal: myCtl.signal, cache: false, effort: 'low' });
+    if (myCtl !== ctl) return;
+    const chunk = normalize(res);
+    turns.push({ role: 'assistant', content: JSON.stringify(res) });
+    setBusy(null);
+    playChunk(chunk);
+  } catch (e) {
+    if (myCtl !== ctl) return;
+    setBusy(null);
+    turns.pop();
+    if (e && e.code === 'cancelled') return;
+    showError(e);
+  }
+}
+function normalize(res) {
+  const steps = Array.isArray(res && res.steps) ? res.steps : [];
+  return {
+    steps: steps.map(s => ({ board: Array.isArray(s.board) ? s.board : [], speech: String(s.speech || '') })),
+    status: ['continue', 'ask', 'end'].includes(res && res.status) ? res.status : 'ask'
+  };
+}
+function showError(e) {
+  const code = e && e.code;
+  const copy = {
+    teacher_off: 'המורה עוד לא הופעל באתר הזה (חסר מפתח API של Anthropic בשרת).',
+    sampling_disabled: 'Claude לא זמין בחשבון הזה.',
+    rate_limited: 'יותר מדי בקשות ברגע זה. חכו דקה ונסו שוב.',
+    session_expired: 'צריך להתחבר מחדש ל-claude.ai.',
+    invalid_json: 'התשובה של המורה הגיעה משובשת.',
+    refused: 'המורה לא יכול לענות על זה. נסו לנסח אחרת.'
+  }[code] || 'הייתה תקלה בחיבור למורה.';
+  const m = el('div', 'msg err', copy);
+  if (code !== 'teacher_off' && lastUserText) {
+    const b = el('button', 'btn', 'נסו שוב'); b.onclick = () => { m.remove(); askTeacher(lastUserText); }; m.append(el('br'), b);
+  }
+  $('chatLog').append(m); scrollChat();
+  setTState('מחכה לך');
+}
+
+/* ================= Speech (teacher voice) ================= */
+let muted = false, voice = null, pitchBoost = 0;
+const FEMALE_RE = /hila|carmit|tamar|noa|female|woman|אישה/i;
+const MALE_RE = /asaf|avri|david|\bmale\b|man\b/i;
+const voiceChoice = {}; // per teacher manual override: voiceURI
+const hebVoices = () => ('speechSynthesis' in window ? speechSynthesis.getVoices() : []).filter(v => /^(he|iw)/i.test(v.lang) || /hebrew|עברית/i.test(v.name));
+const isFemale = v => FEMALE_RE.test(v.name);
+const isMale = v => !isFemale(v) && MALE_RE.test(v.name);
+function pickVoice() {
+  const t = teacher(), vs = hebVoices();
+  pitchBoost = 0;
+  const manual = vs.find(v => v.voiceURI === voiceChoice[t.id]);
+  if (manual) { voice = manual; }
+  else {
+    // natural (online) voices first, then the rest
+    const rank = v => (/natural|online|neural/i.test(v.name) ? 0 : 1);
+    const pool = vs.filter(t.gender === 'f' ? isFemale : isMale).sort((a, b) => rank(a) - rank(b));
+    if (pool.length) voice = pool[t.slot % pool.length];
+    else {
+      voice = vs.sort((a, b) => rank(a) - rank(b))[0] || null;
+      // no voice of the right gender on this device: shift the pitch so it at least sounds closer
+      if (voice && t.gender === 'f' && isMale(voice)) pitchBoost = 0.55;
+      if (voice && t.gender === 'm' && isFemale(voice)) pitchBoost = -0.35;
+    }
+  }
+  renderVoiceSelect();
+}
+function renderVoiceSelect() {
+  const s = $('voiceSel'); if (!s) return;
+  const t = teacher(), vs = hebVoices();
+  s.innerHTML = '';
+  s.append(new Option('קול אוטומטי', ''));
+  vs.forEach(v => s.append(new Option(v.name.replace(/^Microsoft\s+/, '').replace(/\s*-\s*Hebrew.*$/i, '') + (isFemale(v) ? ' (אישה)' : isMale(v) ? ' (גבר)' : ''), v.voiceURI)));
+  s.value = voiceChoice[t.id] || '';
+  const hint = $('voiceHint');
+  const missing = t.gender === 'f' ? !vs.some(isFemale) : !vs.some(isMale);
+  hint.hidden = !(vs.length === 0 || missing);
+  hint.textContent = vs.length === 0
+    ? 'לא נמצא קול עברי במכשיר הזה. פתחו את הדף בדפדפן Microsoft Edge, שבו יש קולות עבריים טבעיים.'
+    : t.gender === 'f'
+      ? 'אין במכשיר הזה קול נשי בעברית, אז הקול הוגבה. לקול אישה טבעי (Hila) פתחו את הדף בדפדפן Microsoft Edge.'
+      : 'אין במכשיר הזה קול גברי בעברית. בדפדפן Microsoft Edge יש קול גבר טבעי (Avri).';
+}
+if ('speechSynthesis' in window) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+function splitSentences(s) { return (s.match(/[^.!?…]+[.!?…]*/g) || []).map(x => x.trim()).filter(Boolean); }
+function speakOne(text, isLive) {
+  return new Promise(resolve => {
+    if (muted || !('speechSynthesis' in window)) {
+      let left = Math.max(1200, text.length * 65); const tick = 100;
+      const iv = setInterval(() => { if (!isLive()) { clearInterval(iv); resolve(); return; } left -= tick; if (left <= 0) { clearInterval(iv); resolve(); } }, tick);
+      return;
+    }
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'he-IL'; if (voice) u.voice = voice;
+    u.rate = parseFloat($('rate').value) * teacher().rate; u.pitch = Math.max(0.1, Math.min(2, teacher().pitch + pitchBoost));
+    let done = false; const fin = () => { if (!done) { done = true; resolve(); } };
+    u.onend = fin; u.onerror = fin;
+    speechSynthesis.speak(u);
+    // safety net: some browsers drop onend
+    setTimeout(fin, 4000 + text.length * 140 / u.rate);
+  });
+}
+
+/* ================= Board rendering ================= */
+let pageNo = 1;
+const tilt = () => ((Math.random() - .5) * 0.9).toFixed(2) + 'deg';
+function inkClass(c) { const ok = ['blue', 'red', 'green', 'black', 'purple', 'orange']; return 'c-' + (ok.includes(c) ? c : teacher().ink); }
+async function typeset(node) {
+  try { if (window.MathJax && MathJax.typesetPromise) { if (MathJax.startup && MathJax.startup.promise) await MathJax.startup.promise; await MathJax.typesetPromise([node]); } } catch { }
+}
+async function drawItem(item) {
+  const board = $('board');
+  const empty = board.querySelector('.empty'); if (empty) empty.remove();
+  const kind = item && item.kind;
+  if (kind === 'newpage') {
+    if (board.children.length) { pageNo++; const hr = el('hr', 'page-break'); hr.dataset.label = 'עמוד ' + pageNo; board.append(hr); board.scrollTo({ top: board.scrollHeight }); }
+    return;
+  }
+  let node, ltr = false, len = 10;
+  if (kind === 'title') { node = el('div', 'bi title', item.text || ''); len = (item.text || '').length; }
+  else if (kind === 'math' || kind === 'box') { node = el('div', 'bi ' + kind); node.textContent = '\\[' + (item.tex || item.text || '') + '\\]'; ltr = true; len = (item.tex || '').length * 0.6; }
+  else if (kind === 'note') { node = el('div', 'bi note', item.text || ''); len = (item.text || '').length; }
+  else if (kind === 'step') {
+    node = el('div', 'bi step'); const n = board.querySelectorAll('.bi.step').length;
+    const lastBreak = [...board.children].reverse().findIndex(c => c.classList.contains('page-break') || c.classList.contains('title'));
+    const sinceBreak = lastBreak === -1 ? n : [...board.children].slice(board.children.length - lastBreak).filter(c => c.classList.contains('step')).length;
+    node.append(el('span', 'num', String(sinceBreak + 1)), el('span', 'txt', item.text || '')); len = (item.text || '').length;
+  }
+  else if (kind === 'graph') { node = el('div', 'bi graph'); node.append(drawGraph(item)); ltr = true; len = 40; }
+  else { node = el('div', 'bi text', item.text || item.tex || ''); len = String(item.text || '').length; }
+  node.classList.add(inkClass(item.color));
+  node.style.setProperty('--tilt', kind === 'graph' || kind === 'box' ? '0deg' : tilt());
+  node.style.visibility = 'hidden';
+  board.append(node);
+  if (kind !== 'graph') await typeset(node);
+  const dur = Math.min(2.6, Math.max(0.5, len * 0.045));
+  node.style.setProperty('--dur', dur + 's');
+  node.style.visibility = '';
+  node.classList.add(ltr ? 'write-ltr' : 'write-rtl');
+  board.scrollTo({ top: board.scrollHeight });
+  await sleep(dur * 1000 + 120);
+}
+
+/* safe expression compiler for graphs: only whitelisted tokens */
+function compileFn(expr) {
+  const toks = String(expr).toLowerCase().replace(/\s+/g, '').replace(/\*\*/g, '^').match(/\d+\.?\d*|\.\d+|[a-z]+|[+\-*/^(),]/g);
+  if (!toks || toks.join('') !== String(expr).toLowerCase().replace(/\s+/g, '').replace(/\*\*/g, '^')) return null;
+  const FN = { sin: 'Math.sin', cos: 'Math.cos', tan: 'Math.tan', sqrt: 'Math.sqrt', ln: 'Math.log', log: 'Math.log10', exp: 'Math.exp', abs: 'Math.abs' };
+  const CONST = { x: 'x', pi: 'Math.PI', e: 'Math.E' };
+  let out = '', prev = null;
+  for (const t of toks) {
+    const isVal = /^[\d.]/.test(t) || t in CONST;
+    const isFn = t in FN;
+    if (/^[a-z]+$/.test(t) && !isFn && !(t in CONST)) return null;
+    const prevEndsVal = prev && (/^[\d.]/.test(prev) || prev in CONST || prev === ')');
+    if ((isVal || isFn || t === '(') && prevEndsVal) out += '*';
+    if (t === '-' && (!prev || ['(', '+', '-', '*', '/', '^', ','].includes(prev))) { out += '(-1)*'; prev = '*'; continue; }
+    out += isFn ? FN[t] : t in CONST ? CONST[t] : t === '^' ? '**' : t;
+    prev = t;
+  }
+  try { const f = new Function('x', '"use strict";return (' + out + ');'); f(1); return f; } catch { return null; }
+}
+function drawGraph(g) {
+  const NS = 'http://www.w3.org/2000/svg', W = 520, H = 340, pad = 26;
+  const xmin = isFinite(g.xmin) ? +g.xmin : -6, xmax = isFinite(g.xmax) && +g.xmax > xmin ? +g.xmax : xmin + 12;
+  const fns = (Array.isArray(g.fns) ? g.fns : g.fn ? [g.fn] : []).map(compileFn).filter(Boolean);
+  let ymin = isFinite(g.ymin) ? +g.ymin : null, ymax = isFinite(g.ymax) ? +g.ymax : null;
+  if (ymin == null || ymax == null || ymax <= ymin) {
+    const ys = []; fns.forEach(f => { for (let i = 0; i <= 80; i++) { const y = f(xmin + (xmax - xmin) * i / 80); if (isFinite(y)) ys.push(y); } });
+    ys.sort((a, b) => a - b);
+    ymin = ys.length ? Math.min(-1, ys[Math.floor(ys.length * .03)]) : -6; ymax = ys.length ? Math.max(1, ys[Math.ceil(ys.length * .97) - 1]) : 6;
+    const m = (ymax - ymin) * .1; ymin -= m; ymax += m;
+  }
+  const sx = x => pad + (x - xmin) / (xmax - xmin) * (W - 2 * pad), sy = y => H - pad - (y - ymin) / (ymax - ymin) * (H - 2 * pad);
+  const svg = document.createElementNS(NS, 'svg'); svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.setAttribute('width', W);
+  const mk = (tag, attrs) => { const n = document.createElementNS(NS, tag); for (const k in attrs) n.setAttribute(k, attrs[k]); svg.append(n); return n; };
+  const step = v => { const r = v / 8, p = Math.pow(10, Math.floor(Math.log10(r))); return [1, 2, 5, 10].map(m => m * p).find(s => s >= r) || p * 10; };
+  const xs = step(xmax - xmin), ysz = step(ymax - ymin);
+  for (let x = Math.ceil(xmin / xs) * xs; x <= xmax; x += xs) { if (Math.abs(x) < 1e-9) continue; mk('line', { x1: sx(x), x2: sx(x), y1: sy(0) - 4, y2: sy(0) + 4, stroke: '#23272e', 'stroke-width': 1.5 }); const t = mk('text', { x: sx(x), y: Math.min(H - 6, sy(0) + 18), 'text-anchor': 'middle', 'font-size': 12, fill: '#4b5563', 'font-family': 'Rubik, sans-serif' }); t.textContent = +x.toFixed(4); }
+  for (let y = Math.ceil(ymin / ysz) * ysz; y <= ymax; y += ysz) { if (Math.abs(y) < 1e-9) continue; mk('line', { x1: sx(0) - 4, x2: sx(0) + 4, y1: sy(y), y2: sy(y), stroke: '#23272e', 'stroke-width': 1.5 }); const t = mk('text', { x: sx(0) - 8, y: sy(y) + 4, 'text-anchor': 'end', 'font-size': 12, fill: '#4b5563', 'font-family': 'Rubik, sans-serif' }); t.textContent = +y.toFixed(4); }
+  const ax = Math.max(pad, Math.min(W - pad, sx(0))), ay = Math.max(pad, Math.min(H - pad, sy(0)));
+  mk('line', { x1: pad - 10, x2: W - pad + 10, y1: ay, y2: ay, stroke: '#23272e', 'stroke-width': 2 });
+  mk('line', { x1: ax, x2: ax, y1: H - pad + 10, y2: pad - 10, stroke: '#23272e', 'stroke-width': 2 });
+  mk('text', { x: W - 12, y: ay - 8, 'font-size': 15, fill: '#23272e', 'font-style': 'italic' }).textContent = 'x';
+  mk('text', { x: ax + 8, y: 16, 'font-size': 15, fill: '#23272e', 'font-style': 'italic' }).textContent = 'y';
+  const colors = ['#1f4fbf', '#c62828', '#1b7a3a', '#6a3cb5'];
+  fns.forEach((f, i) => {
+    let d = '', pen = false;
+    for (let k = 0; k <= 400; k++) {
+      const x = xmin + (xmax - xmin) * k / 400, y = f(x);
+      if (!isFinite(y) || y < ymin - (ymax - ymin) || y > ymax + (ymax - ymin)) { pen = false; continue; }
+      d += (pen ? 'L' : 'M') + sx(x).toFixed(1) + ' ' + sy(y).toFixed(1); pen = true;
+    }
+    const p = mk('path', { d, fill: 'none', stroke: colors[i % 4], 'stroke-width': 3, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' });
+    p.style.clipPath = `inset(0 0 0 0)`;
+  });
+  (Array.isArray(g.points) ? g.points : []).forEach(pt => {
+    if (!isFinite(pt.x) || !isFinite(pt.y)) return;
+    mk('circle', { cx: sx(pt.x), cy: sy(pt.y), r: 5, fill: '#c62828' });
+    if (pt.label) { const t = mk('text', { x: sx(pt.x) + 8, y: sy(pt.y) - 8, 'font-size': 13, fill: '#c62828', 'font-family': 'Rubik, sans-serif' }); t.textContent = String(pt.label).slice(0, 30); }
+  });
+  return svg;
+}
+
+/* ================= Lesson player ================= */
+const P = { chunk: null, step: 0, sent: 0, drawn: -1, playing: false, gen: 0 };
+function playChunk(chunk) { P.chunk = chunk; P.step = 0; P.sent = 0; P.drawn = -1; resume(); }
+function resume() {
+  if (!P.chunk) return;
+  P.playing = true; P.gen++; setPauseUI();
+  run(P.gen);
+}
+function stopPlayback(fromAsk) {
+  P.playing = false; P.gen++;
+  if ('speechSynthesis' in window) speechSynthesis.cancel();
+  $('teacherBox').classList.remove('speaking');
+  setPauseUI();
+  if (!fromAsk) setTState('בהפסקה');
+}
+async function run(gen) {
+  const live = () => P.playing && P.gen === gen;
+  const steps = P.chunk.steps;
+  while (live() && P.step < steps.length) {
+    const s = steps[P.step];
+    let drawing = Promise.resolve();
+    if (P.drawn < P.step) {
+      P.drawn = P.step;
+      drawing = (async () => { for (const it of s.board) { await drawItem(it); } })();
+    }
+    const sents = splitSentences(s.speech);
+    if (P.sent === 0 && s.speech) addTeacherMsg(s.speech);
+    setTState('מסביר');
+    $('teacherBox').classList.add('speaking');
+    while (live() && P.sent < sents.length) {
+      await speakOne(sents[P.sent], live);
+      if (!live()) return;
+      P.sent++;
+    }
+    $('teacherBox').classList.remove('speaking');
+    await drawing;
+    if (!live()) return;
+    P.step++; P.sent = 0;
+    await sleep(350);
+  }
+  if (!live()) return;
+  P.playing = false; setPauseUI();
+  const st = P.chunk.status;
+  P.chunk = null;
+  if (st === 'continue') askTeacher('המשך בשיעור.');
+  else if (st === 'ask') { setTState('מחכה לתשובה שלך'); sysMsg('המורה מחכה לתשובה שלך. אפשר לכתוב או לדבר.'); $('input').focus(); }
+  else { setTState('השיעור הסתיים'); sysMsg('השיעור הסתיים. אפשר להמשיך לשאול, לבקש תרגיל או להתחיל שיעור חדש.'); }
+}
+/* When the student interrupts, keep only what was actually shown in the last assistant turn */
+function trimInterrupted() {
+  if (!P.chunk) return '';
+  const shown = P.chunk.steps.slice(0, Math.max(P.drawn + 1, 0));
+  const last = turns[turns.length - 1];
+  if (last && last.role === 'assistant') last.content = JSON.stringify({ steps: shown, status: 'continue' });
+  return P.drawn + 1 < P.chunk.steps.length || P.sent > 0 ? '(התלמיד/ה עצר/ה אותך באמצע ההסבר.) ' : '';
+}
+
+/* ================= UI state ================= */
+function setBusy(text) {
+  $('boardStatus').hidden = !text; if (text) $('boardStatusText').textContent = text;
+  if (text) setTState(text);
+}
+function setTState(t) { $('tState').textContent = t; }
+function setPauseUI() {
+  const b = $('pauseBtn');
+  b.querySelector('span').textContent = P.playing ? 'עצור' : 'המשך';
+  b.querySelector('svg').innerHTML = P.playing ? '<rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/>' : '<path d="M7 4.5v15l13-7.5z"/>';
+  b.disabled = !P.chunk && !P.playing;
+}
+function scrollChat() { const c = $('chatLog'); c.scrollTop = c.scrollHeight; }
+function addTeacherMsg(text) { const m = el('div', 'msg t'); m.append(el('span', 'who', teacher().name), document.createTextNode(text)); $('chatLog').append(m); scrollChat(); }
+function addStudentMsg(text) { const m = el('div', 'msg s'); m.append(el('span', 'who', 'אני'), document.createTextNode(text)); $('chatLog').append(m); scrollChat(); }
+function sysMsg(text) { $('chatLog').append(el('div', 'msg sys', text)); scrollChat(); }
+
+/* ================= actions ================= */
+function startLesson() {
+  const t = teacher(); const gl = GRADES.find(g => g.id === sel.grade).label;
+  $('setup').hidden = true; $('room').hidden = false; $('backBtn').hidden = false;
+  const chip = $('lessonChip'); chip.hidden = false; chip.innerHTML = '';
+  chip.append(document.createTextNode(gl + ' · ' + sel.units + ' יח"ל · '), el('b', null, topicText()));
+  $('tAv').replaceWith(Object.assign(avatar(t, true), { id: 'tAv' }));
+  $('tName').textContent = t.name;
+  $('board').innerHTML = '<div class="empty">המורה עוד רגע מתחיל לכתוב על הלוח…</div>';
+  $('chatLog').innerHTML = ''; turns = []; pageNo = 1; P.chunk = null;
+  pickVoice();
+  sysMsg('אפשר לעצור את המורה בכל רגע ולשאול, בכתיבה או במיקרופון.');
+  track('lesson', `${gl} · ${sel.units} יח"ל · ${topicText()} · מורה: ${t.name}`);
+  // unlock speech on this user gesture
+  try { if ('speechSynthesis' in window) { speechSynthesis.cancel(); speechSynthesis.speak(Object.assign(new SpeechSynthesisUtterance(' '), { volume: 0 })); } } catch { }
+  askTeacher('התחל את השיעור.');
+}
+function studentSays(text) {
+  text = text.trim(); if (!text) return;
+  addStudentMsg(text);
+  track('question', text, { topic: topicText() });
+  const prefix = trimInterrupted();
+  askTeacher(prefix + 'התלמיד/ה אומר/ת: ' + text);
+}
+function quickAsk(label, instruction) {
+  addStudentMsg(label);
+  track('action', label, { topic: topicText() });
+  const prefix = trimInterrupted();
+  askTeacher(prefix + instruction);
+}
+
+$('startBtn').onclick = startLesson;
+$('backBtn').onclick = () => {
+  stopPlayback(true); if (ctl) { ctl.abort(); ctl = null; } setBusy(null);
+  $('room').hidden = true; $('setup').hidden = false; $('backBtn').hidden = true; $('lessonChip').hidden = true;
+};
+$('pauseBtn').onclick = () => { if (P.playing) stopPlayback(); else if (P.chunk) resume(); };
+$('raiseBtn').onclick = () => { if (P.playing) stopPlayback(); setTState('מקשיב לשאלה שלך'); $('input').focus(); };
+$('practiceBtn').onclick = () => quickAsk('תן לי תרגיל', 'תן/י לי תרגיל אחד ברמה שלי על מה שלמדנו עכשיו. כתוב/י אותו על הלוח וחכה/י לתשובה שלי (status "ask"). אל תגלה/י את הפתרון.');
+$('slowerBtn').onclick = () => quickAsk('לא הבנתי, אפשר שוב?', 'לא הבנתי את החלק האחרון. הסבר/י אותו שוב בדרך אחרת, לאט יותר ועם דוגמה פשוטה יותר.');
+$('summaryBtn').onclick = () => quickAsk('סכם לי את השיעור', 'סכם/י את מה שלמדנו בשיעור בעמוד חדש בלוח: הנוסחאות והכללים החשובים, ודגשים לבגרות.');
+$('sendBtn').onclick = () => { const v = $('input').value; $('input').value = ''; autoGrow(); if (P.playing) stopPlayback(true); studentSays(v); };
+$('input').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('sendBtn').click(); } });
+$('input').addEventListener('focus', () => { if (P.playing) { stopPlayback(); setTState('מקשיב לשאלה שלך'); } });
+function autoGrow() { const t = $('input'); t.style.height = 'auto'; t.style.height = Math.min(120, t.scrollHeight) + 'px'; }
+$('input').addEventListener('input', autoGrow);
+$('voiceSel').onchange = (e) => {
+  voiceChoice[teacher().id] = e.target.value; pickVoice();
+  if (!P.playing && !muted && 'speechSynthesis' in window) { speechSynthesis.cancel(); speakOne('שלום, ככה נשמע הקול שלי.', () => true); }
+};
+$('muteBtn').onclick = () => { muted = !muted; $('muteBtn').textContent = muted ? 'קול: כבוי' : 'קול: פועל'; if (muted && 'speechSynthesis' in window) speechSynthesis.cancel(); };
+
+/* ================= microphone (speech to text) ================= */
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let rec = null, recOn = false, micBlocked = false;
+/* Inside claude.ai the page frame blocks the microphone, so fall back to the device's own voice typing,
+   which types straight into the chat box. */
+function micHelp() {
+  const old = document.querySelector('.mic-help'); if (old) old.remove();
+  const m = el('div', 'msg mic-help');
+  m.innerHTML = '<b>מדברים עם המורה בהקלדה קולית</b><br>'
+    + 'הסמן כבר נמצא בתיבת הכתיבה. עכשיו:<br>'
+    + '• <b>במחשב Windows:</b> לחצו <kbd>Win</kbd> + <kbd>H</kbd>, דברו, ואז לחצו Enter לשליחה.<br>'
+    + '• <b>בטלפון:</b> לחצו על סמל המיקרופון במקלדת ודברו.<br>'
+    + '• <b>ב-Mac:</b> לחצו פעמיים על <kbd>Fn</kbd>.<br>'
+    + '<small>אם הקלדה קולית בעברית לא מופעלת במחשב: הגדרות ← שעה ושפה ← שפה ואזור ← הוספת עברית.</small>';
+  $('chatLog').append(m); scrollChat();
+  $('input').focus();
+}
+$('micBtn').onclick = () => {
+  if (recOn) { rec && rec.stop(); return; }
+  if (P.playing) stopPlayback();
+  if (!SR || micBlocked) { micHelp(); return; }
+  rec = new SR(); rec.lang = 'he-IL'; rec.interimResults = true; rec.continuous = false;
+  let finalText = '';
+  rec.onresult = (ev) => {
+    let interim = ''; finalText = '';
+    for (const r of ev.results) { if (r.isFinal) finalText += r[0].transcript; else interim += r[0].transcript; }
+    $('input').value = (finalText + interim).trim(); autoGrow();
+  };
+  rec.onerror = (ev) => {
+    if (ev.error === 'no-speech') sysMsg('לא שמעתי כלום. נסו שוב.');
+    else if (ev.error !== 'aborted') { micBlocked = true; micHelp(); }
+  };
+  rec.onend = () => {
+    recOn = false; $('micBtn').classList.remove('rec'); setTState('מחכה לך');
+    const v = $('input').value.trim(); if (v && finalText) { $('input').value = ''; autoGrow(); studentSays(v); }
+  };
+  try { rec.start(); recOn = true; $('micBtn').classList.add('rec'); setTState('מקשיב לך'); }
+  catch { micBlocked = true; micHelp(); }
+};
+
+/* ================= welcome + login (accounts kept only in this browser) ================= */
+let studentName = '';
+const accounts = {
+  load() { try { return JSON.parse(localStorage.getItem('mt_accounts') || '{}'); } catch { return {}; } },
+  save(a) { try { localStorage.setItem('mt_accounts', JSON.stringify(a)); } catch { } }
+};
+async function hashPass(email, pass) {
+  try {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(email + '\u0000' + pass));
+    return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+  } catch { return 'p:' + pass.length + ':' + email; }
+}
+function loginError(msg) { const e = $('loginErr'); e.textContent = msg; e.hidden = !msg; }
+function enterClass(email) {
+  $('chipAv').hidden = true;
+  $('chipName').textContent = email;
+  $('userChip').hidden = false;
+  $('welcome').hidden = true; $('setup').hidden = false;
+  window.scrollTo(0, 0);
+}
+$('loginForm').addEventListener('submit', async (ev) => {
+  ev.preventDefault();
+  const email = $('loginEmail').value.trim().toLowerCase();
+  const pass = $('loginPass').value;
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return loginError('כתובת המייל לא תקינה.');
+  if (pass.length < 6) return loginError('הסיסמה צריכה להיות לפחות 6 תווים.');
+  const all = accounts.load(); const h = await hashPass(email, pass);
+  if (all[email] && all[email] !== h) return loginError('הסיסמה לא נכונה למייל הזה.');
+  if (!all[email]) { all[email] = h; accounts.save(all); }
+  loginError('');
+  $('loginPass').value = '';
+  currentEmail = email;
+  track('login', 'כניסה לאתר');
+  enterClass(email);
+});
+
+/* ================= activity log (saved in Supabase) ================= */
+let currentEmail = '';
+function track(type, text, extra) {
+  api({ action: 'log', type, email: currentEmail, text: String(text || '').slice(0, 1500), details: extra || null }).catch(() => { });
+}
+
+/* ================= hidden admin page ================= */
+const ADMIN_PASS = '1234';
+const TYPE_LABEL = { login: 'כניסה', lesson: 'התחלת שיעור', question: 'שאלה / תשובה', action: 'בקשה' };
+function openAdmin() {
+  ['welcome', 'setup', 'room'].forEach(id => $(id).hidden = true);
+  if (P.playing) stopPlayback(true);
+  $('admin').hidden = false; $('adminLogin').hidden = false; $('adminPanel').hidden = true;
+  $('adminPass').value = ''; $('adminErr').hidden = true; $('adminPass').focus();
+}
+function closeAdmin() {
+  $('admin').hidden = true;
+  $(currentEmail ? 'setup' : 'welcome').hidden = false;
+  if (location.hash === '#admin') history.replaceState(null, '', location.pathname + location.search);
+}
+let logoClicks = 0, logoTimer = null;
+document.querySelector('.brand-mark').addEventListener('click', () => {
+  logoClicks++; clearTimeout(logoTimer); logoTimer = setTimeout(() => logoClicks = 0, 1500);
+  if (logoClicks >= 5) { logoClicks = 0; openAdmin(); }
+});
+window.addEventListener('hashchange', () => { if (location.hash === '#admin') openAdmin(); });
+if (location.hash === '#admin') openAdmin();
+$('adminClose').onclick = closeAdmin;
+$('adminExit').onclick = closeAdmin;
+$('adminLogin').addEventListener('submit', (e) => {
+  e.preventDefault();
+  adminPassword = $('adminPass').value;
+  loadAdmin(true);
+});
+let adminPassword = '';
+$('adminRefresh').onclick = loadAdmin;
+const fmt = (t) => { try { return new Date(t).toLocaleString('he-IL', { dateStyle: 'short', timeStyle: 'short' }); } catch { return ''; } };
+async function loadAdmin(fromLogin) {
+  let rows;
+  try { rows = (await api({ action: 'list', password: adminPassword })).rows || []; }
+  catch (e) {
+    if (fromLogin === true) { $('adminErr').textContent = e.code === 'wrong_password' ? 'סיסמה שגויה.' : 'לא הצלחתי להתחבר לשרת.'; $('adminErr').hidden = false; }
+    else $('adminMsg').textContent = 'לא הצלחתי לטעון את הנתונים.';
+    return;
+  }
+  $('adminLogin').hidden = true; $('adminPanel').hidden = false;
+  $('adminMsg').textContent = ''; $('adminList').innerHTML = ''; $('adminStats').innerHTML = '';
+  const byEmail = {};
+  rows.forEach(r => {
+    const k = r.email || 'ללא מייל';
+    const d = byEmail[k] || (byEmail[k] = { email: k, lastSeen: 0, events: [] });
+    const at = Date.parse(r.created_at);
+    d.events.push({ type: r.type, text: r.text, at });
+    if (at > d.lastSeen) d.lastSeen = at;
+  });
+  // rows arrive newest first; events are reversed again below for display
+  const docs = Object.values(byEmail).map(d => (d.events.reverse(), d));
+  docs.sort((a, b) => (b.lastSeen || 0) - (a.lastSeen || 0));
+  const all = docs.flatMap(d => d.events || []);
+  const stat = (n, l) => { const s = el('div', 'stat'); s.append(el('b', null, String(n)), el('span', null, l)); return s; };
+  $('adminStats').append(
+    stat(docs.length, 'תלמידים'),
+    stat(all.filter(e => e.type === 'login').length, 'כניסות'),
+    stat(all.filter(e => e.type === 'lesson').length, 'שיעורים'),
+    stat(all.filter(e => e.type === 'question').length, 'שאלות ותשובות')
+  );
+  $('adminMsg').textContent = docs.length ? '' : 'עדיין אין פניות. הן יופיעו כאן אחרי שתלמידים ייכנסו.';
+  docs.forEach(d => {
+    const evs = (d.events || []).slice().reverse();
+    const det = el('details', 'stu');
+    const sum = el('summary');
+    sum.append(el('b', null, d.email || 'ללא מייל'), el('span', null, evs.length + ' פעולות · נראה לאחרונה ' + fmt(d.lastSeen)));
+    det.append(sum);
+    const wrap = el('div', 'ev-wrap'); const tbl = el('table', 'ev');
+    evs.forEach(e => {
+      const tr = el('tr');
+      const tdT = el('td', null, fmt(e.at));
+      const tdK = el('td'); tdK.append(el('span', 'tag ' + (e.type || ''), TYPE_LABEL[e.type] || e.type || ''));
+      const tdX = el('td', null, e.text || '');
+      tr.append(tdT, tdK, tdX); tbl.append(tr);
+    });
+    wrap.append(tbl); det.append(wrap); $('adminList').append(det);
+  });
+}
+
+renderAll();
+setPauseUI();
+</script>
+</html>
