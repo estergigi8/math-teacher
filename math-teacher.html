@@ -1,5 +1,9 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>הלוח של המורה</title>
-<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playpen+Sans+Hebrew:wght@400;600&family=Rubik:wght@400;500;700&display=swap">
 <script>
@@ -57,6 +61,7 @@ body {
   padding-block: 12px; box-sizing: border-box;
 }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 button, input, textarea { font: inherit; color: inherit; }
 button { cursor: pointer; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
@@ -78,6 +83,93 @@ header.top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .btn.danger { color: var(--danger); }
 .btn svg { width: 17px; height: 17px; flex: none; }
 .btn.on { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+
+/* ---------- welcome ---------- */
+#welcome { display: grid; gap: 16px; padding-bottom: 24px; }
+.hero { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 28px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 32px; }
+.hero-text { display: grid; gap: 14px; min-width: 0; }
+.eyebrow { margin: 0; color: var(--accent); font-weight: 500; font-size: 13.5px; letter-spacing: .02em; }
+.hero-title { margin: 0; font-size: clamp(28px, 4.2vw, 42px); line-height: 1.15; font-weight: 700; text-wrap: balance; }
+.hero-title .hand { font-family: var(--font-hand); color: var(--accent); font-weight: 600; background: linear-gradient(transparent 70%, color-mix(in srgb, var(--hl) 50%, transparent) 70%); padding-inline: 4px; }
+.lead { margin: 0; color: var(--muted); font-size: 16.5px; max-width: 58ch; }
+.perks { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 10px; }
+.perks li { display: grid; gap: 1px; padding-inline-start: 14px; border-inline-start: 3px solid var(--hl); }
+.perks b { font-size: 15px; }
+.perks span { color: var(--muted); font-size: 14px; }
+.hero-board { min-width: 0; }
+.mini-board { background: var(--board); border: 8px solid var(--board-frame); border-radius: 12px; padding: 20px 22px; font-family: var(--font-hand); color: var(--ink-blue); display: grid; gap: 8px; transform: rotate(-1.2deg);
+  background-image: linear-gradient(var(--board-grid) 1px, transparent 1px), linear-gradient(90deg, var(--board-grid) 1px, transparent 1px); background-size: 24px 24px; }
+.mb-title { font-size: 24px; font-weight: 600; color: var(--ink-black); }
+.mb-line { font-size: 21px; }
+.mb-box { font-size: 20px; color: var(--ink-green); border: 2.5px solid currentColor; border-radius: 12px 9px 14px 8px; padding: 4px 12px; justify-self: center; }
+.ltr { direction: ltr; text-align: left; }
+.login { max-width: 440px; width: 100%; justify-self: center; }
+.login h2 { font-size: 18px; }
+.field { display: grid; gap: 5px; }
+.field label { font-weight: 500; font-size: 14px; }
+.field input { border: 1.5px solid var(--line); background: var(--surface-2); border-radius: 10px; padding: 11px 12px; min-width: 0; }
+.field input:focus { border-color: var(--accent); outline: none; }
+.form-err { margin: 0; color: var(--danger); font-size: 14px; }
+.login .btn { justify-content: center; }
+.who-row { display: flex; gap: 12px; align-items: center; min-width: 0; }
+.me-av { width: 46px; height: 46px; border-radius: 50%; object-fit: cover; flex: none; }
+.me-text { min-width: 0; }
+.me-text b { display: block; font-size: 16px; }
+.me-text span { color: var(--muted); font-size: 13.5px; }
+.btn.big { padding: 12px 22px; font-size: 16px; }
+.user-chip { display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--muted); }
+.user-chip img { width: 28px; height: 28px; border-radius: 50%; }
+@media (max-width: 760px) {
+  .hero { grid-template-columns: minmax(0, 1fr); padding: 22px 18px; }
+}
+
+/* ---------- admin ---------- */
+#admin { display: grid; gap: 14px; padding-bottom: 24px; }
+#adminPanel { display: grid; gap: 14px; }
+.admin-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.admin-head h2 { margin: 0; font-size: 20px; }
+.admin-actions { display: flex; gap: 8px; }
+.admin-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+.stat b { display: block; font-size: 24px; font-variant-numeric: tabular-nums; }
+.stat span { color: var(--muted); font-size: 13px; }
+.admin-list { display: grid; gap: 10px; }
+.stu { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+.stu summary { cursor: pointer; padding: 12px 14px; display: flex; gap: 12px; flex-wrap: wrap; align-items: baseline; }
+.stu summary b { direction: ltr; unicode-bidi: isolate; }
+.stu summary span { color: var(--muted); font-size: 13px; }
+.ev-wrap { overflow-x: auto; border-top: 1px solid var(--line); }
+.ev { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.ev td { padding: 7px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.ev td:first-child { white-space: nowrap; color: var(--muted); font-variant-numeric: tabular-nums; }
+.tag { display: inline-block; border-radius: 999px; padding: 1px 9px; font-size: 12px; font-weight: 500; white-space: nowrap; background: var(--surface-2); border: 1px solid var(--line); }
+.tag.question { border-color: var(--accent); color: var(--accent); }
+.tag.lesson { border-color: var(--hl); }
+
+/* ---------- subject picker ---------- */
+#subject { display: grid; gap: 18px; padding-block: 8px 24px; }
+.subj-title { margin: 0; font-size: 24px; text-align: center; text-wrap: balance; }
+.subjects { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; max-width: 720px; width: 100%; margin-inline: auto; }
+.subj { aspect-ratio: 1 / 1; max-width: 100%; display: grid; place-content: center; justify-items: center; gap: 10px; text-align: center; background: var(--surface); border: 2px solid var(--line); border-radius: 18px; padding: 20px; transition: border-color .15s, transform .15s; }
+.subj:hover { border-color: var(--accent); transform: translateY(-2px); }
+.subj-mark { width: 84px; height: 84px; border-radius: 20px; display: grid; place-items: center; background: var(--accent); color: var(--accent-fg); font-family: var(--font-hand); font-size: 46px; font-weight: 600; }
+.subj-mark.mono { font-family: Consolas, 'Courier New', monospace; font-size: 32px; background: var(--ink-green); color: #fff; }
+.subj b { font-size: 22px; }
+.subj span:last-child { color: var(--muted); font-size: 14px; }
+@media (max-width: 520px) {
+  .subjects { grid-template-columns: minmax(0, 1fr); }
+  .subj { aspect-ratio: auto; padding: 26px 16px; }
+}
+.setup-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.setup-head h2 { margin: 0; font-size: 20px; }
+.exams { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.exam-card { text-align: right; border: 1.5px solid var(--line); background: var(--surface-2); border-radius: 12px; padding: 14px; display: grid; gap: 3px; }
+.exam-card b { font-size: 15px; }
+.exam-card span { color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+.exam-card[aria-pressed="true"] { border-color: var(--accent); background: var(--surface); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent); }
+.topic.out { color: var(--muted); opacity: .65; cursor: not-allowed; }
+.topic.out small { display: inline-block; margin-inline-start: 6px; font-size: 11px; border: 1px solid var(--line); border-radius: 999px; padding: 0 6px; }
+.bi.code { direction: ltr; text-align: left; font-family: Consolas, 'Courier New', monospace; font-size: 16px; line-height: 1.55; white-space: pre; overflow-x: auto; border: 1.5px dashed currentColor; border-radius: 10px; padding: 10px 14px; background: rgba(0, 0, 0, .025); }
 
 /* ---------- setup ---------- */
 #setup { display: grid; gap: 14px; padding-bottom: 24px; }
@@ -201,29 +293,96 @@ header.top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
   <header class="top">
     <div class="brand">
       <div class="brand-mark">∫</div>
-      <div><h1>הלוח של המורה</h1><small>שיעור מתמטיקה אונליין · כיתות י'–י"ב · 3, 4 ו-5 יח"ל</small></div>
+      <div><h1>הלוח של המורה</h1><small>מתמטיקה ומדעי המחשב · שיעור פרטי אונליין</small></div>
     </div>
     <div class="spacer"></div>
     <div class="lesson-chip" id="lessonChip" hidden></div>
     <button class="btn" id="backBtn" hidden>שיעור חדש</button>
+    <div class="user-chip" id="userChip" hidden><img id="chipAv" alt=""><span id="chipName"></span></div>
   </header>
 
+  <!-- ===== Welcome ===== -->
+  <section id="welcome">
+    <div class="hero">
+      <div class="hero-text">
+        <p class="eyebrow">שיעור פרטי אונליין · מתמטיקה ומדעי המחשב</p>
+        <h2 class="hero-title">ברוכים הבאים ל<span class="hand">הלוח של המורה</span></h2>
+        <p class="lead">מורה פרטי שכותב על הלוח, מסביר בקול ועוצר בכל פעם שיש לך שאלה. בוחרים מקצוע: מתמטיקה לפי כיתה ורמה (3, 4 או 5 יח"ל), או מדעי המחשב לפי שאלון ומיקוד הבגרות. בוחרים נושא ומתחילים ללמוד, ובסוף מקבלים סיכום.</p>
+        <ul class="perks">
+          <li><b>לוח חי</b><span>נוסחאות, שלבי פתרון וגרפים נכתבים מול העיניים</span></li>
+          <li><b>שואלים בכל רגע</b><span>עוצרים את המורה בכתיבה או בדיבור</span></li>
+          <li><b>3 מורים לבחירה</b><span>כל אחד עם סגנון וקול משלו</span></li>
+        </ul>
+      </div>
+      <div class="hero-board" aria-hidden="true">
+        <div class="mini-board">
+          <div class="mb-title">נגזרת של פולינום</div>
+          <div class="mb-line ltr">f(x) = x³ − 3x</div>
+          <div class="mb-line ltr">f′(x) = 3x² − 3</div>
+          <div class="mb-box ltr">f′(x) = 0 ⇒ x = ±1</div>
+        </div>
+      </div>
+    </div>
+
+    <form class="panel login" id="loginForm" novalidate>
+      <h2>כניסה לכיתה</h2>
+      <div class="field">
+        <label for="loginEmail">מייל</label>
+        <input id="loginEmail" type="email" dir="ltr" autocomplete="email" placeholder="name@example.com" required>
+      </div>
+      <div class="field">
+        <label for="loginPass">סיסמה</label>
+        <input id="loginPass" type="password" dir="ltr" autocomplete="current-password" placeholder="לפחות 6 תווים" required>
+      </div>
+      <p class="form-err" id="loginErr" hidden></p>
+      <button class="btn primary big" type="submit" id="enterBtn">כניסה</button>
+      <p class="hint">בפעם הראשונה הפרטים נשמרים, ובפעם הבאה נכנסים עם אותו מייל ואותה סיסמה. הפרטים נשמרים רק בדפדפן הזה.</p>
+    </form>
+  </section>
+
+  <!-- ===== Subject picker ===== -->
+  <section id="subject" hidden>
+    <h2 class="subj-title">מה לומדים היום?</h2>
+    <div class="subjects">
+      <button class="subj" id="pickMath" type="button">
+        <span class="subj-mark">∫</span>
+        <b>מתמטיקה</b>
+        <span>כיתות י'–י"ב · 3, 4 ו-5 יח"ל</span>
+      </button>
+      <button class="subj" id="pickCs" type="button">
+        <span class="subj-mark mono">{ }</span>
+        <b>מדעי המחשב</b>
+        <span>לפי שאלון ומיקוד תשפ"ז</span>
+      </button>
+    </div>
+  </section>
+
   <!-- ===== Setup ===== -->
-  <section id="setup">
+  <section id="setup" hidden>
     <div class="notice" id="aiNotice" hidden></div>
 
-    <div class="panel">
+    <div class="setup-head">
+      <button class="btn" id="switchSubject" type="button">החלפת מקצוע</button>
+      <h2 id="setupTitle">מתמטיקה</h2>
+    </div>
+
+    <div class="panel" id="gradePanel">
       <h2><span class="n">1</span>באיזו כיתה את/ה?</h2>
       <div class="chips" id="gradeChips"></div>
     </div>
 
-    <div class="panel">
+    <div class="panel" id="unitPanel">
       <h2><span class="n">2</span>כמה יחידות לימוד?</h2>
       <div class="chips" id="unitChips"></div>
     </div>
 
+    <div class="panel" id="examPanel" hidden>
+      <h2><span class="n">1</span>לאיזה שאלון מתכוננים?</h2>
+      <div class="exams" id="examCards"></div>
+    </div>
+
     <div class="panel">
-      <h2><span class="n">3</span>על מה לומדים היום?</h2>
+      <h2><span class="n" id="nTopic">3</span>על מה לומדים היום?</h2>
       <p class="hint" id="topicsHint">הנושאים מסודרים לפי תוכנית הלימודים לכיתה ולרמה שבחרת. אפשר גם לכתוב נושא במילים שלך.</p>
       <div class="free">
         <input id="freeTopic" type="text" placeholder="לדוגמה: איך מוצאים נקודות קיצון של פונקציה עם שורש" autocomplete="off">
@@ -232,7 +391,7 @@ header.top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
     </div>
 
     <div class="panel">
-      <h2><span class="n">4</span>בחירת מורה</h2>
+      <h2><span class="n" id="nTeacher">4</span>בחירת מורה</h2>
       <div class="teachers" id="teachers"></div>
     </div>
 
@@ -242,6 +401,32 @@ header.top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
         התחלת השיעור
       </button>
       <span class="summary" id="summary">בחרו כיתה, רמה ונושא</span>
+    </div>
+  </section>
+
+  <!-- ===== Admin (hidden: open with #admin or 5 clicks on the logo) ===== -->
+  <section id="admin" hidden>
+    <form class="panel login" id="adminLogin" novalidate>
+      <h2>כניסת מנהלת</h2>
+      <div class="field">
+        <label for="adminPass">סיסמה</label>
+        <input id="adminPass" type="password" dir="ltr" autocomplete="off">
+      </div>
+      <p class="form-err" id="adminErr" hidden></p>
+      <button class="btn primary" type="submit">כניסה</button>
+      <button class="btn" type="button" id="adminClose">חזרה לאתר</button>
+    </form>
+    <div id="adminPanel" hidden>
+      <div class="admin-head">
+        <h2>כל הפניות מהאתר</h2>
+        <div class="admin-actions">
+          <button class="btn" id="adminRefresh">רענון</button>
+          <button class="btn" id="adminExit">יציאה</button>
+        </div>
+      </div>
+      <div class="admin-stats" id="adminStats"></div>
+      <p class="hint" id="adminMsg"></p>
+      <div class="admin-list" id="adminList"></div>
     </div>
   </section>
 
@@ -269,7 +454,7 @@ header.top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
           </button>
           <button class="btn" id="practiceBtn">תן לי תרגיל</button>
           <button class="btn" id="slowerBtn">לא הבנתי, שוב</button>
-          <button class="btn wide" id="summaryBtn">סכם לי את השיעור</button>
+          <button class="btn wide" id="summaryBtn">סיום השיעור וסיכום</button>
         </div>
         <div class="voice-row">
           <button class="btn" id="muteBtn" style="padding:5px 10px">קול: פועל</button>
@@ -370,6 +555,30 @@ const CURRICULUM = {
 const EXAMS = { '10-5': 'שאלון 571' };
 const examOf = () => EXAMS[sel.grade + '-' + sel.units] || '';
 
+/* Computer science: questionnaires and the 2027 (תשפ"ז) focus list. 1 = in the exam, 0 = not in the exam */
+const CS_EXAMS = [
+  { id: '899371', name: 'יסודות מדעי המחשב', sub: 'שאלון 899371', groups: [
+    { cat: 'יסודות', items: [['פרק 1 – מבוא', 1], ['פרק 2 – מושגי יסוד בתכנות (char, double, מחרוזת ופעולות על מחרוזות)', 1], ['פרק 3 – ביצוע מותנה', 1], ['פרק 4 – ביצוע חוזר', 1]] },
+    { cat: 'פרק 5 – מבני נתונים סדרתיים', items: [['מערכים של טיפוסי נתונים בסיסיים', 1], ['מושגי יסוד במערכים: אינדקס, אורך (length), גישה x[i]', 1], ['הגדרת ואתחול מערכים', 1], ['חיפוש סדרתי', 1], ['חיפוש בינארי', 0], ['מיון הכנסה', 0], ['מיון מיזוג', 0], ['השוואת יעילות: חיפוש סדרתי וחיפוש בינארי', 0], ['מערך של עצמים (new)', 0], ['מערך דו-ממדי', 1]] },
+    { cat: 'תכנות מונחה עצמים', items: [['פרק 6 – תכנות מונחה עצמים (כולל מחלקה מורכבת)', 1]] }
+  ] },
+  { id: '899271', name: 'מבני נתונים ונושא בחירה', sub: 'שאלון 899271', note: 'השאלון כולל גם את היסודות לפי המיקוד של שאלון 899371, ונושא בחירה אחד מיחידה 5', groups: [
+    { cat: 'יסודות', items: [['חזרה על היסודות (לפי המיקוד של 899371)', 1]] },
+    { cat: 'מבני נתונים', items: [['פרק 1 – רקורסיה', 1], ['פרק 2 – מבוא ליעילות', 1], ['פרק 3 – מחסנית', 0], ['פרק 4 – תור', 1], ['רשימה מקושרת חד-כיוונית', 1], ['רשימה מקושרת דו-כיוונית', 0], ['פרק 6 – מימוש מבני נתונים', 0], ['עצים בינאריים: המבנה והמינוח', 1], ['החוליה הבינארית כאבן בניין של עצים בינאריים', 1], ['אלגוריתמי סריקה של עצים בינאריים', 1], ['עץ חיפוש בינארי', 0], ['יעילות חיפוש והוספה בעץ חיפוש בינארי', 0]] },
+    { cat: 'בחירה: בינה מלאכותית', items: [['מבוא', 1], ['פרק 1 – בסיס מתמטי', 1], ['פרק 2 – בסיס סטטיסטי', 1], ['פרק 3 – למידה לא מונחית', 1], ['4.1 – מבוא ללמידה מונחית', 1], ['4.2 – אלגוריתם Nearest Centroid', 1], ['4.3 – אלגוריתם KNN', 1], ['4.4 – סיווג מבוסס מרחק: מבט-על', 0], ['5.1 – הערכת ביצועים', 1], ['5.2 – ולידציה וחקר פרמטרים', 0]] },
+    { cat: 'בחירה: אלגוריתמים', items: [['פרק 1 – היכרות עם גרפים', 1], ['פרק 2 – ייצוג של גרפים', 1], ['פרק 3 – מסלולים קצרים ביותר ממקור יחיד', 1], ['פרק 4 – מסלולים קצרים בגרף עם משקולות אי-שליליים', 1], ['פרק 5 – מסלולים קצרים בגרף מכוון עם משקולות חיוביים ושליליים', 1], ['פרק 6 – סריקה לעומק', 1], ['פרק 7 – מיון טופולוגי ומסלולים קצרים בגמ"ל', 1], ['פרק 8 – עץ פורש מינימלי', 1], ['פרק 9 – זרימה ברשתות', 0], ['פרק 10 – קידוד ודחיסת נתונים', 0]] },
+    { cat: 'בחירה: מודלים חישוביים', items: [['פרק 1 – תיאור מערכות ופתרון חידות', 1], ['פרק 2 – אוטומט סופי דטרמיניסטי', 1], ['פרק 3 – מילים ושפות פורמליות', 1], ['פרק 4 – מודלים נוספים של אוטומט סופי', 1], ['פרק 5 – אוטומט מחסנית לא דטרמיניסטי', 0], ['אוטומט מחסנית דטרמיניסטי', 1], ['השוואת כוח חישוב ותכונות סגירות של שפות חופשיות הקשר', 0], ['פרק 7 – מכונת טיורינג', 1]] },
+    { cat: 'בחירה: תכנות מונחה עצמים', items: [['פרק 1 – כל העולם כולו עצמים', 1], ['פרק 2 – עוברים לג\'אווה', 1], ['פרק 3 – על המחלקה, העצמים ומה שביניהם', 1], ['פרק 4 – פענוח צפונות ה-main() (כולל מערך של עצמים)', 1], ['פרק 5 – ירושה ופולימורפיזם', 1], ['פרק 6 – ממשקים', 0], ['פרק 7 – שפות תכנות: משפות מכונה ועד ג\'אווה', 0]] }
+  ] },
+  { id: '899282', name: 'תכנות אינטרנט', sub: 'שאלונים 899282, 899372', groups: [
+    { cat: 'אינטרנט ו-HTML', items: [['פרק 1 – מבוא לאינטרנט ומבוא ל-HTML', 1]] },
+    { cat: 'פרק 2 – שרת-לקוח ותכנות בצד השרת', items: [['עקרונות העבודה שרת-לקוח באינטרנט', 1], ['פעולות בסיסיות בשרת', 1], ['עבודה עם מסד נתונים', 1], ['XML', 0]] },
+    { cat: 'JavaScript', items: [['פרק 3 – יסודות JavaScript', 1]] }
+  ] }
+];
+const csExam = () => CS_EXAMS.find(x => x.id === sel.exam);
+const CS_STYLE = 'כתוב/י קוד ב-Java, השפה של בחינת הבגרות, אלא אם התלמיד/ה ביקש/ה C#. בשאלוני תכנות אינטרנט כתוב/י HTML ו-JavaScript. כל קוד נכתב בפריט code, קצר וקריא, עם שמות משתנים באנגלית. הסבר/י מה כל חלק בקוד עושה, והראה/י טבלת מעקב כשזה עוזר להבין. היה/י מדויק/ת.';
+
 const TEACHERS = [
   { id: 'ronit', name: 'רונית', color: '#2c6fd6', ink: 'blue', gender: 'f', slot: 0, pitch: 1.1, rate: 1,
     blurb: 'סבלנית וחמה. מסבירה לאט, עם הרבה דוגמאות מהחיים.',
@@ -387,7 +596,7 @@ const $ = (id) => document.getElementById(id);
 const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
-const sel = { grade: null, units: null, topic: null, free: '', teacher: TEACHERS[0].id };
+const sel = { subject: 'math', grade: null, units: null, exam: null, topic: null, free: '', teacher: TEACHERS[0].id };
 
 function renderChips() {
   const g = $('gradeChips'); g.innerHTML = '';
@@ -401,8 +610,38 @@ function renderChips() {
     b.onclick = () => { sel.units = n; sel.topic = null; renderAll(); }; u.append(b);
   });
 }
+function renderExams() {
+  const box = $('examCards'); box.innerHTML = '';
+  CS_EXAMS.forEach(x => {
+    const b = el('button', 'exam-card'); b.type = 'button'; b.setAttribute('aria-pressed', sel.exam === x.id);
+    b.append(el('b', null, x.name), el('span', null, x.sub));
+    b.onclick = () => { sel.exam = x.id; sel.topic = null; renderAll(); };
+    box.append(b);
+  });
+}
+function renderCsTopics(box) {
+  const x = csExam();
+  $('topicsHint').textContent = x
+    ? `הנושאים לפי המיקוד של ${x.sub} למועדי תשפ"ז. נושאים שלא ייכללו בבחינה מופיעים באפור. אפשר גם לכתוב נושא במילים שלך.`
+    : 'בחרו שאלון כדי לראות את הנושאים לפי המיקוד.';
+  if (!x) return;
+  x.groups.forEach(g => {
+    const card = el('div', 'cat'); card.append(el('h3', null, g.cat));
+    const ul = el('ul');
+    g.items.forEach(([t, inc]) => {
+      const li = el('li'); const b = el('button', 'topic' + (inc ? '' : ' out'), t); b.type = 'button';
+      if (inc) {
+        b.setAttribute('aria-pressed', sel.topic === t);
+        b.onclick = () => { sel.topic = t; sel.free = ''; $('freeTopic').value = ''; renderAll(); };
+      } else { b.disabled = true; b.append(el('small', null, 'לא בבחינה')); }
+      li.append(b); ul.append(li);
+    });
+    card.append(ul); box.append(card);
+  });
+}
 function renderTopics() {
   const box = $('topics'); box.innerHTML = '';
+  if (sel.subject === 'cs') return renderCsTopics(box);
   $('topicsHint').textContent = 'הנושאים מסודרים לפי תוכנית הלימודים לכיתה ולרמה שבחרת' + (examOf() ? ' (' + examOf() + ')' : '') + '. אפשר גם לכתוב נושא במילים שלך.';
   if (!sel.grade || !sel.units) {
     box.append(el('p', 'hint', 'בחרו כיתה ומספר יחידות כדי לראות את רשימת הנושאים.'));
@@ -430,13 +669,24 @@ function renderTeachers() {
   });
 }
 function topicText() { return sel.free.trim() || sel.topic; }
-function renderSummary() {
-  const ok = sel.grade && sel.units && topicText();
-  $('startBtn').disabled = !ok || aiState === 'none';
+function lessonLabel() {
+  if (sel.subject === 'cs') { const x = csExam(); return x ? 'מדעי המחשב · ' + x.sub : 'מדעי המחשב'; }
   const gl = GRADES.find(g => g.id === sel.grade);
-  $('summary').textContent = ok ? `${gl.label} · ${sel.units} יח"ל · ${topicText()} · עם ${teacher().name}` : 'בחרו כיתה, רמה ונושא';
+  return gl ? `${gl.label} · ${sel.units} יח"ל` : '';
 }
-function renderAll() { renderChips(); renderTopics(); renderTeachers(); renderSummary(); }
+function renderSummary() {
+  const ok = (sel.subject === 'cs' ? sel.exam : sel.grade && sel.units) && topicText();
+  $('startBtn').disabled = !ok || aiState === 'none';
+  $('summary').textContent = ok ? `${lessonLabel()} · ${topicText()} · עם ${teacher().name}` : (sel.subject === 'cs' ? 'בחרו שאלון ונושא' : 'בחרו כיתה, רמה ונושא');
+}
+function renderAll() {
+  const cs = sel.subject === 'cs';
+  $('gradePanel').hidden = cs; $('unitPanel').hidden = cs; $('examPanel').hidden = !cs;
+  $('nTopic').textContent = cs ? '2' : '3'; $('nTeacher').textContent = cs ? '3' : '4';
+  $('setupTitle').textContent = cs ? 'מדעי המחשב' : 'מתמטיקה';
+  $('freeTopic').placeholder = cs ? 'לדוגמה: איך עוברים על מערך דו-ממדי עם לולאה כפולה' : 'לדוגמה: איך מוצאים נקודות קיצון של פונקציה עם שורש';
+  renderChips(); renderExams(); renderTopics(); renderTeachers(); renderSummary();
+}
 const teacher = () => TEACHERS.find(t => t.id === sel.teacher);
 
 $('freeTopic').addEventListener('input', e => { sel.free = e.target.value; if (sel.free.trim()) sel.topic = null; renderTopics(); renderSummary(); });
@@ -451,13 +701,28 @@ let sample = null, aiState = 'loading';
 })();
 
 function curriculumContext() {
+  if (sel.subject === 'cs') {
+    const x = csExam();
+    const inc = x.groups.map(g => g.cat + ': ' + g.items.filter(i => i[1]).map(i => i[0]).join(', ')).join('\n');
+    const out = x.groups.flatMap(g => g.items.filter(i => !i[1]).map(i => i[0])).join(', ');
+    return inc + (out ? '\nלא ייכללו בבחינה (אל תלמד/י אותם אלא אם התלמיד/ה ביקש/ה במפורש): ' + out : '');
+  }
   return CURRICULUM[sel.grade][sel.units].map(c => c.cat + ': ' + c.items.join(', ')).join('\n');
 }
+function courseIntro() {
+  if (sel.subject === 'cs') {
+    const x = csExam();
+    return `אתה/את מעביר/ה שיעור פרטי אונליין במדעי המחשב לתלמיד/ה בתיכון, לקראת בחינת הבגרות ב${x.sub} (${x.name}), לפי המיקוד של משרד החינוך למועדי תשפ"ז.${x.note ? ' ' + x.note + '.' : ''}`;
+  }
+  const gl = GRADES.find(g => g.id === sel.grade).label;
+  return `אתה/את מעביר/ה שיעור פרטי אונליין במתמטיקה לתלמיד/ה ב${gl}, ברמת ${sel.units} יחידות לימוד${examOf() ? ', לקראת ' + examOf() + ' בבגרות' : ''}, לפי תוכנית הלימודים של משרד החינוך (תשפ"ז).`;
+}
 function rules() {
-  const t = teacher(); const gl = GRADES.find(g => g.id === sel.grade).label;
+  const t = teacher();
   return `${t.persona}
-אתה/את מעביר/ה שיעור פרטי אונליין במתמטיקה לתלמיד/ה ב${gl}, ברמת ${sel.units} יחידות לימוד${examOf() ? ', לקראת ' + examOf() + ' בבגרות' : ''}, לפי תוכנית הלימודים של משרד החינוך (תשפ"ז).
+${courseIntro()}
 נושא השיעור שהתלמיד/ה ביקש/ה: "${topicText()}".
+${studentName ? 'שם התלמיד/ה: ' + studentName + '. פנה/י בשם הפרטי מדי פעם, בטבעיות.' : ''}
 אם הנושא נכתב במילים חופשיות, הבן/י לאיזה נושא בתוכנית הוא שייך והתאם/י לרמה. אם הוא מחוץ לרמה, אמור/י זאת בעדינות והתאם/י.
 נושאי התוכנית בכיתה וברמה הזו (להקשר):
 ${curriculumContext()}
@@ -473,13 +738,13 @@ ${curriculumContext()}
   {"kind":"box","tex":"LaTeX"} נוסחה חשובה במסגרת
   {"kind":"step","text":"..."} שלב ממוספר בפתרון
   {"kind":"note","text":"..."} הערה או אזהרה מטעות נפוצה
-  {"kind":"graph","fns":["x^2-4"],"xmin":-5,"xmax":5,"ymin":-6,"ymax":6,"points":[{"x":2,"y":0,"label":"(2,0)"}]} גרף. בפונקציות השתמש/י רק ב: x, מספרים, + - * / ^ ( ), sin cos tan sqrt ln log exp abs pi e.
+${sel.subject === 'cs' ? '  {"kind":"code","code":"..."} קטע קוד. שורות מופרדות ב-\\n, הזחה ברווחים\n' : ''}  {"kind":"graph","fns":["x^2-4"],"xmin":-5,"xmax":5,"ymin":-6,"ymax":6,"points":[{"x":2,"y":0,"label":"(2,0)"}]} גרף. בפונקציות השתמש/י רק ב: x, מספרים, + - * / ^ ( ), sin cos tan sqrt ln log exp abs pi e.
   {"kind":"newpage"} מחיקת הלוח ומעבר לעמוד חדש (כשהלוח מתמלא או כשעוברים לחלק חדש).
   לכל פריט אפשר להוסיף "color": blue | red | green | black | purple | orange. הטוש הקבוע שלך: ${t.ink}. אדום להדגשות ואזהרות, ירוק לתשובות סופיות.
 - status: "continue" אם תמשיך/י בהסבר במקטע הבא, "ask" אם שאלת את התלמיד/ה שאלה ואת/ה מחכה לתשובה, "end" כשהשיעור הסתיים.
 כשהתלמיד/ה עונה על שאלה: בדוק/י את התשובה בכנות, הסבר/י טעויות בעדינות, ואז המשך/י.
 כשהתלמיד/ה עוצר/ת אותך עם שאלה: ענה/י עליה על הלוח ובקול, ואז חזור/י לשיעור מאותה נקודה.
-כתוב/י נוסחאות בכתיב המקובל בבתי הספר בישראל. היה/י מדויק/ת מתמטית.
+${sel.subject === 'cs' ? CS_STYLE : 'כתוב/י נוסחאות בכתיב המקובל בבתי הספר בישראל. היה/י מדויק/ת מתמטית.'}
 החזר/י JSON בלבד, בצורה: {"steps":[{"board":[...],"speech":"..."}],"status":"continue"}`;
 }
 
@@ -623,12 +888,13 @@ async function drawItem(item) {
     node.append(el('span', 'num', String(sinceBreak + 1)), el('span', 'txt', item.text || '')); len = (item.text || '').length;
   }
   else if (kind === 'graph') { node = el('div', 'bi graph'); node.append(drawGraph(item)); ltr = true; len = 40; }
+  else if (kind === 'code') { node = el('pre', 'bi code'); node.textContent = String(item.code || item.text || ''); ltr = true; len = Math.min(60, node.textContent.length * 0.3); }
   else { node = el('div', 'bi text', item.text || item.tex || ''); len = String(item.text || '').length; }
   node.classList.add(inkClass(item.color));
-  node.style.setProperty('--tilt', kind === 'graph' || kind === 'box' ? '0deg' : tilt());
+  node.style.setProperty('--tilt', kind === 'graph' || kind === 'box' || kind === 'code' ? '0deg' : tilt());
   node.style.visibility = 'hidden';
   board.append(node);
-  if (kind !== 'graph') await typeset(node);
+  if (kind !== 'graph' && kind !== 'code') await typeset(node);
   const dur = Math.min(2.6, Math.max(0.5, len * 0.045));
   node.style.setProperty('--dur', dur + 's');
   node.style.visibility = '';
@@ -744,7 +1010,8 @@ async function run(gen) {
   P.chunk = null;
   if (st === 'continue') askTeacher('המשך בשיעור.');
   else if (st === 'ask') { setTState('מחכה לתשובה שלך'); sysMsg('המורה מחכה לתשובה שלך. אפשר לכתוב או לדבר.'); $('input').focus(); }
-  else { setTState('השיעור הסתיים'); sysMsg('השיעור הסתיים. אפשר להמשיך לשאול, לבקש תרגיל או להתחיל שיעור חדש.'); }
+  else if (!summaryDone) { summaryDone = true; sysMsg('המורה מסכם את השיעור…'); askTeacher(SUMMARY_PROMPT); }
+  else { setTState('השיעור הסתיים'); sysMsg('השיעור הסתיים והסיכום על הלוח. אפשר להמשיך לשאול, לבקש תרגיל או להתחיל שיעור חדש.'); }
 }
 /* When the student interrupts, keep only what was actually shown in the last assistant turn */
 function trimInterrupted() {
@@ -773,17 +1040,20 @@ function addStudentMsg(text) { const m = el('div', 'msg s'); m.append(el('span',
 function sysMsg(text) { $('chatLog').append(el('div', 'msg sys', text)); scrollChat(); }
 
 /* ================= actions ================= */
+let summaryDone = false;
+const SUMMARY_PROMPT = 'השיעור מסתיים. כתוב/י סיכום מסודר של השיעור בעמוד חדש בלוח (התחל/י ב-newpage): מה למדנו, הכללים, הנוסחאות או דוגמאות הקוד החשובים, טעויות נפוצות ודגשים לבגרות. בסוף אמור/י משפט פרידה קצר ומעודד, והחזר/י status "end".';
 function startLesson() {
-  const t = teacher(); const gl = GRADES.find(g => g.id === sel.grade).label;
+  const t = teacher(); summaryDone = false;
   $('setup').hidden = true; $('room').hidden = false; $('backBtn').hidden = false;
   const chip = $('lessonChip'); chip.hidden = false; chip.innerHTML = '';
-  chip.append(document.createTextNode(gl + ' · ' + sel.units + ' יח"ל · '), el('b', null, topicText()));
+  chip.append(document.createTextNode(lessonLabel() + ' · '), el('b', null, topicText()));
   $('tAv').replaceWith(Object.assign(avatar(t, true), { id: 'tAv' }));
   $('tName').textContent = t.name;
   $('board').innerHTML = '<div class="empty">המורה עוד רגע מתחיל לכתוב על הלוח…</div>';
   $('chatLog').innerHTML = ''; turns = []; pageNo = 1; P.chunk = null;
   pickVoice();
   sysMsg('אפשר לעצור את המורה בכל רגע ולשאול, בכתיבה או במיקרופון.');
+  track('lesson', `${lessonLabel()} · ${topicText()} · מורה: ${t.name}`);
   // unlock speech on this user gesture
   try { if ('speechSynthesis' in window) { speechSynthesis.cancel(); speechSynthesis.speak(Object.assign(new SpeechSynthesisUtterance(' '), { volume: 0 })); } } catch { }
   askTeacher('התחל את השיעור.');
@@ -791,11 +1061,13 @@ function startLesson() {
 function studentSays(text) {
   text = text.trim(); if (!text) return;
   addStudentMsg(text);
+  track('question', text, { topic: topicText() });
   const prefix = trimInterrupted();
   askTeacher(prefix + 'התלמיד/ה אומר/ת: ' + text);
 }
 function quickAsk(label, instruction) {
   addStudentMsg(label);
+  track('action', label, { topic: topicText() });
   const prefix = trimInterrupted();
   askTeacher(prefix + instruction);
 }
@@ -809,7 +1081,7 @@ $('pauseBtn').onclick = () => { if (P.playing) stopPlayback(); else if (P.chunk)
 $('raiseBtn').onclick = () => { if (P.playing) stopPlayback(); setTState('מקשיב לשאלה שלך'); $('input').focus(); };
 $('practiceBtn').onclick = () => quickAsk('תן לי תרגיל', 'תן/י לי תרגיל אחד ברמה שלי על מה שלמדנו עכשיו. כתוב/י אותו על הלוח וחכה/י לתשובה שלי (status "ask"). אל תגלה/י את הפתרון.');
 $('slowerBtn').onclick = () => quickAsk('לא הבנתי, אפשר שוב?', 'לא הבנתי את החלק האחרון. הסבר/י אותו שוב בדרך אחרת, לאט יותר ועם דוגמה פשוטה יותר.');
-$('summaryBtn').onclick = () => quickAsk('סכם לי את השיעור', 'סכם/י את מה שלמדנו בשיעור בעמוד חדש בלוח: הנוסחאות והכללים החשובים, ודגשים לבגרות.');
+$('summaryBtn').onclick = () => { summaryDone = true; quickAsk('סיום השיעור וסיכום', SUMMARY_PROMPT); };
 $('sendBtn').onclick = () => { const v = $('input').value; $('input').value = ''; autoGrow(); if (P.playing) stopPlayback(true); studentSays(v); };
 $('input').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('sendBtn').click(); } });
 $('input').addEventListener('focus', () => { if (P.playing) { stopPlayback(); setTState('מקשיב לשאלה שלך'); } });
@@ -861,6 +1133,152 @@ $('micBtn').onclick = () => {
   catch { micBlocked = true; micHelp(); }
 };
 
+/* ================= welcome + login (accounts kept only in this browser) ================= */
+let studentName = '';
+const accounts = {
+  load() { try { return JSON.parse(localStorage.getItem('mt_accounts') || '{}'); } catch { return {}; } },
+  save(a) { try { localStorage.setItem('mt_accounts', JSON.stringify(a)); } catch { } }
+};
+async function hashPass(email, pass) {
+  try {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(email + '\u0000' + pass));
+    return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+  } catch { return 'p:' + pass.length + ':' + email; }
+}
+function loginError(msg) { const e = $('loginErr'); e.textContent = msg; e.hidden = !msg; }
+function enterClass(email) {
+  $('chipAv').hidden = true;
+  $('chipName').textContent = email;
+  $('userChip').hidden = false;
+  $('welcome').hidden = true; $('subject').hidden = false;
+  window.scrollTo(0, 0);
+}
+$('loginForm').addEventListener('submit', async (ev) => {
+  ev.preventDefault();
+  const email = $('loginEmail').value.trim().toLowerCase();
+  const pass = $('loginPass').value;
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return loginError('כתובת המייל לא תקינה.');
+  if (pass.length < 6) return loginError('הסיסמה צריכה להיות לפחות 6 תווים.');
+  const all = accounts.load(); const h = await hashPass(email, pass);
+  if (all[email] && all[email] !== h) return loginError('הסיסמה לא נכונה למייל הזה.');
+  if (!all[email]) { all[email] = h; accounts.save(all); }
+  loginError('');
+  $('loginPass').value = '';
+  currentEmail = email;
+  track('login', 'כניסה לאתר');
+  enterClass(email);
+});
+
+/* ================= activity log (shared db; only the owner can read it all) ================= */
+let currentEmail = '', dbApi = null, myId = null, myLog = null, saveTimer = null, saving = false;
+const dbReady = (async () => {
+  try {
+    if (!window.claude || !window.claude.use) return;
+    const [db, user] = await Promise.all([window.claude.use('db'), window.claude.use('user')]);
+    if (!db || !user) return;
+    myId = await user.id();
+    if (!myId) return;
+    dbApi = db;
+    const snap = await db.doc('inquiries/' + myId).get();
+    myLog = snap.exists ? JSON.parse(JSON.stringify(snap.data())) : null;
+  } catch { dbApi = null; }
+})();
+function track(type, text, extra) {
+  const ev = Object.assign({ type, text: String(text || '').slice(0, 1500), at: Date.now() }, extra || {});
+  dbReady.then(() => {
+    if (!dbApi) return;
+    if (!myLog) myLog = { email: currentEmail, firstSeen: Date.now(), events: [] };
+    if (currentEmail) myLog.email = currentEmail;
+    myLog.lastSeen = Date.now();
+    myLog.events.push(ev);
+    if (myLog.events.length > 400) myLog.events = myLog.events.slice(-400);
+    clearTimeout(saveTimer); saveTimer = setTimeout(flushLog, 1200);
+  });
+}
+async function flushLog() {
+  if (saving) { clearTimeout(saveTimer); saveTimer = setTimeout(flushLog, 800); return; }
+  saving = true;
+  try { await dbApi.doc('inquiries/' + myId).set(myLog); } catch { }
+  saving = false;
+}
+
+/* ================= hidden admin page ================= */
+const ADMIN_PASS = '1234';
+const TYPE_LABEL = { login: 'כניסה', lesson: 'התחלת שיעור', question: 'שאלה / תשובה', action: 'בקשה' };
+function openAdmin() {
+  ['welcome', 'subject', 'setup', 'room'].forEach(id => $(id).hidden = true);
+  if (P.playing) stopPlayback(true);
+  $('admin').hidden = false; $('adminLogin').hidden = false; $('adminPanel').hidden = true;
+  $('adminPass').value = ''; $('adminErr').hidden = true; $('adminPass').focus();
+}
+function closeAdmin() {
+  $('admin').hidden = true;
+  $(currentEmail ? 'subject' : 'welcome').hidden = false;
+  if (location.hash === '#admin') history.replaceState(null, '', location.pathname + location.search);
+}
+let logoClicks = 0, logoTimer = null;
+document.querySelector('.brand-mark').addEventListener('click', () => {
+  logoClicks++; clearTimeout(logoTimer); logoTimer = setTimeout(() => logoClicks = 0, 1500);
+  if (logoClicks >= 5) { logoClicks = 0; openAdmin(); }
+});
+window.addEventListener('hashchange', () => { if (location.hash === '#admin') openAdmin(); });
+if (location.hash === '#admin') openAdmin();
+$('adminClose').onclick = closeAdmin;
+$('adminExit').onclick = closeAdmin;
+$('adminLogin').addEventListener('submit', (e) => {
+  e.preventDefault();
+  if ($('adminPass').value !== ADMIN_PASS) { $('adminErr').textContent = 'סיסמה שגויה.'; $('adminErr').hidden = false; return; }
+  $('adminLogin').hidden = true; $('adminPanel').hidden = false;
+  loadAdmin();
+});
+$('adminRefresh').onclick = loadAdmin;
+const fmt = (t) => { try { return new Date(t).toLocaleString('he-IL', { dateStyle: 'short', timeStyle: 'short' }); } catch { return ''; } };
+async function loadAdmin() {
+  $('adminMsg').textContent = 'טוען…'; $('adminList').innerHTML = ''; $('adminStats').innerHTML = '';
+  await dbReady;
+  if (!dbApi) { $('adminMsg').textContent = 'מסד הנתונים לא זמין בתצוגה הזאת. פתחי את הקישור כשאת מחוברת לחשבון שלך ב-claude.ai.'; return; }
+  let docs = [];
+  try { docs = (await dbApi.collection('inquiries').get()).docs.filter(d => d.exists).map(d => d.data()); }
+  catch { $('adminMsg').textContent = 'לא הצלחתי לטעון את הנתונים. רק בעלת האפליקציה יכולה לראות אותם.'; return; }
+  docs.sort((a, b) => (b.lastSeen || 0) - (a.lastSeen || 0));
+  const all = docs.flatMap(d => d.events || []);
+  const stat = (n, l) => { const s = el('div', 'stat'); s.append(el('b', null, String(n)), el('span', null, l)); return s; };
+  $('adminStats').append(
+    stat(docs.length, 'תלמידים'),
+    stat(all.filter(e => e.type === 'login').length, 'כניסות'),
+    stat(all.filter(e => e.type === 'lesson').length, 'שיעורים'),
+    stat(all.filter(e => e.type === 'question').length, 'שאלות ותשובות')
+  );
+  $('adminMsg').textContent = docs.length ? '' : 'עדיין אין פניות. הן יופיעו כאן אחרי שתלמידים ייכנסו.';
+  docs.forEach(d => {
+    const evs = (d.events || []).slice().reverse();
+    const det = el('details', 'stu');
+    const sum = el('summary');
+    sum.append(el('b', null, d.email || 'ללא מייל'), el('span', null, evs.length + ' פעולות · נראה לאחרונה ' + fmt(d.lastSeen)));
+    det.append(sum);
+    const wrap = el('div', 'ev-wrap'); const tbl = el('table', 'ev');
+    evs.forEach(e => {
+      const tr = el('tr');
+      const tdT = el('td', null, fmt(e.at));
+      const tdK = el('td'); tdK.append(el('span', 'tag ' + (e.type || ''), TYPE_LABEL[e.type] || e.type || ''));
+      const tdX = el('td', null, e.text || '');
+      tr.append(tdT, tdK, tdX); tbl.append(tr);
+    });
+    wrap.append(tbl); det.append(wrap); $('adminList').append(det);
+  });
+}
+
+/* ================= subject picker ================= */
+function pickSubject(s) {
+  if (sel.subject !== s) { sel.subject = s; sel.topic = null; sel.free = ''; $('freeTopic').value = ''; }
+  $('subject').hidden = true; $('setup').hidden = false;
+  renderAll(); window.scrollTo(0, 0);
+}
+$('pickMath').onclick = () => pickSubject('math');
+$('pickCs').onclick = () => pickSubject('cs');
+$('switchSubject').onclick = () => { $('setup').hidden = true; $('subject').hidden = false; window.scrollTo(0, 0); };
+
 renderAll();
 setPauseUI();
 </script>
+</html>
